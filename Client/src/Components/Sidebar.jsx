@@ -42,7 +42,7 @@ export default function SideBar({ active }) {
                         <span>{process.env.REACT_APP_APP_NAME}</span>
                     </li>
 
-                    <Link data-content="Chats" className={location.pathname.endsWith('chats') ? 'activeNavLink' : 'nonActiveNavLink'} to={'/chats'}>
+                    <Link data-content="Chats" className={location.pathname.endsWith('chats') || location.pathname.includes('chats') ? 'activeNavLink' : 'nonActiveNavLink'} to={'/chats'}>
                         <li className='newNavLink'>
                             <IconButton>
                                 <ChatTeardropDots className='phosphor-icon' />

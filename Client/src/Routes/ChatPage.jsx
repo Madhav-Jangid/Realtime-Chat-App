@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Sidebar from '../Components/Sidebar';
 import '../css/ChatPage.css';
 import "../css/Allusers.css";
@@ -28,7 +28,7 @@ export default function ChatPage({ currentUser }) {
             const response = await fetch(`${BACKEND_URL}/fetchClerkUsers`);
 
             if (!response.ok) {
-                console.log(response);
+                // console.log(response);
                 throw new Error(`Error: ${response.status} ${response.statusText}`);
             }
 
@@ -55,7 +55,7 @@ export default function ChatPage({ currentUser }) {
             user.username.toLowerCase().includes(urlUser?.toLowerCase())
         );
         if (urlUserData && urlUserData.length > 0) {
-            console.log(urlUserData);
+            // console.log(urlUserData?.[0]);
             setUrlUser(urlUserData);
             dispatch(setSelectedUser(urlUserData[0]));
             setHighlight(true);
@@ -80,6 +80,13 @@ export default function ChatPage({ currentUser }) {
             <Sidebar />
             <Routes>
                 <Route path='/chats/*' element={
+                    <AllChats
+                        highlight={highlight}
+                        heading={'Messages'}
+                        users={users}
+                    />
+                } />
+                <Route path='/chats' element={
                     <AllChats
                         highlight={highlight}
                         heading={'Messages'}

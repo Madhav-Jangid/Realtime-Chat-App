@@ -7,7 +7,6 @@ import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined
 
 export default function TopNavConvo({ selectedUser }) {
 
-    console.log(selectedUser);
     return (
         <div className='convoTopNav'>
             <div className='convoUserDetails'>

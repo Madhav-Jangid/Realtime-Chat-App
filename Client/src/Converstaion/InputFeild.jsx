@@ -6,11 +6,11 @@ import { IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useDispatch } from 'react-redux';
 import { setNewMessage } from '../features/newMessage/newMessageSlice';
-
-// import io from 'socket.io-client';
+import { io } from 'socket.io-client';
 
 export default function InputFeild({ selectedUser, roomId, user }) {
-    // const socket = io(process.env.REACT_APP_BACKEND_URL);
+
+
     const dispatch = useDispatch();
 
     const [message, setMessage] = useState('');
@@ -83,29 +83,42 @@ export default function InputFeild({ selectedUser, roomId, user }) {
 
 
     const SendMessageToUser = async () => {
+
+        const socket = io(process.env.REACT_APP_BACKEND_URL);
+
         const messageToSend = imageUrl ? `${message}#$IMG$#${imageUrl}` : message;
-    
+
         initializeChatData(roomId);
         addMessageToChat(roomId, user?.primaryEmailAddress.emailAddress, messageToSend);
-    
+
+        socket.emit('sent_message', {
+            from: {
+                roomId,
+                email: user?.primaryEmailAddress.emailAddress,
+            },
+            to: selectedUser,
+            message: messageToSend
+
+        })
+
         setMessage('');
         setImageUrl(null);
-    
+
         try {
             const chatData = getChatData(roomId);
-    
+
             if (!chatData || !chatData.conversation || chatData.conversation.length === 0) {
                 console.log('No messages to send.');
                 return;
             }
-    
+
             // Create an array to collect promises for each message sending
             const sendPromises = [];
-    
+
             // Iterate through each message in conversation
             for (let i = 0; i < chatData.conversation.length; i++) {
                 const storedMessage = chatData.conversation[i];
-    
+
                 // Send message to backend
                 const sendPromise = fetch(`${process.env.REACT_APP_BACKEND_URL}/conversation/message`, {
                     method: 'POST',
@@ -129,25 +142,25 @@ export default function InputFeild({ selectedUser, roomId, user }) {
                 }).catch(error => {
                     console.error(`Error sending message "${storedMessage.message}":`, error);
                 });
-    
+
                 sendPromises.push(sendPromise);
             }
-    
+
             // Wait for all messages to be sent before clearing local storage
             await Promise.all(sendPromises);
-    
+
             // After all messages are sent and local storage is updated, check if conversation is empty and clear local storage
             if (chatData.conversation.length === 0) {
                 localStorage.removeItem(`chatData_${roomId}`);
                 console.log('Conversation cleared from local storage.');
             }
-    
+
         } catch (error) {
             console.error('Error sending messages:', error);
         }
     };
-    
-    
+
+
 
 
     useEffect(() => {

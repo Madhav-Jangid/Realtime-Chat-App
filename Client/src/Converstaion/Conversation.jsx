@@ -6,11 +6,16 @@ import { useUser } from '@clerk/clerk-react';
 import { useSelector } from 'react-redux';
 import { selectSelectedUser } from '../features/selectedUser/selectedUserSlice';
 import { CircularProgress } from '@mui/material';
+import { useLocation } from 'react-router-dom';
 const ConvoDiv = React.lazy(() => import('./ConvoDiv'));
 
-export default function Conversation(props) {
+export default function Conversation() {
     const { user } = useUser();
     const [roomId, setRoomId] = useState('');
+
+    const location = useLocation();
+
+    const [isContainUser, setIsContainUser] = useState(false);
 
     const selectedUser = useSelector(selectSelectedUser);
 
@@ -24,6 +29,7 @@ export default function Conversation(props) {
 
     useEffect(() => {
         if (selectedUser?.email_addresses?.[0].email_address && user?.primaryEmailAddress.emailAddress) {
+            setIsContainUser(true);
             let selectedUserEmail = selectedUser?.email_addresses[0].email_address;
             let userEmail = user?.primaryEmailAddress.emailAddress;
             let conversationId = concatenateAndSortByCharacter(selectedUserEmail, userEmail)
@@ -32,20 +38,39 @@ export default function Conversation(props) {
     }, [selectedUser, user]);
 
 
+    const checkUrlForChatUser = () => {
+        const pathname = location.pathname;
+        if (pathname.startsWith('/chats')) {
+            const chatUser = pathname.split('/chats')[1];
+            if (chatUser && chatUser.trim().length > 0 && chatUser !== '/') {
+                console.log('Chat user found:', chatUser);
+                // alert(chatUser);
+                return
+            }
+        } 
+        setIsContainUser(false)
+    };
+
+    useEffect(() => {
+        checkUrlForChatUser();
+    }, [location.pathname]);
 
     return (
         <>
             {
-                selectedUser?.username ?
+                selectedUser?.username && isContainUser ?
                     <div className='convoComponent'>
                         <TopNavConvo selectedUser={selectedUser} />
                         <Suspense fallback={
                             <div style={{
                                 display: 'flex',
                                 alignItems: 'center',
-                                justifyContent: 'center'
+                                justifyContent: 'center',
+                                flexDirection: 'column',
+                                gap: 10
                             }} id="conversation" name="conversation" className="conversation">
                                 <CircularProgress />
+                                <p>Loading...</p>
                             </div>}>
                             <ConvoDiv selectedUser={selectedUser} roomId={roomId} user={user} />
                         </Suspense>

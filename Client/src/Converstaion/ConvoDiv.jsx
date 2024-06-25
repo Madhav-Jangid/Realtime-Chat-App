@@ -1,25 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setNewMessage, clearNewMessage } from '../features/newMessage/newMessageSlice';
+import { CircularProgress } from '@mui/material';
+import { io } from 'socket.io-client';
 
-export default function ConvoDiv({ selectedUser, roomId, user }) {
+export default function ConvoDiv({ state, selectedUser, roomId, user }) {
+
+
+
     const dispatch = useDispatch();
     const newMessage = useSelector(state => state.newMessage); // Assuming newMessage state from Redux
 
-    const [conversation, setConversation] = useState([]);
+    const [conversation, setConversation] = useState(null);
+    const divRef = useRef(null);
 
-    useEffect(() => {
-        fetchConversation(roomId);
-    }, [roomId]); // Fetch conversation on roomId change
 
-    useEffect(() => {
-        if (newMessage) {
-            // Add new message to conversation and update state
-            setConversation(prevConversation => [...prevConversation, newMessage]);
-            // Clear new message from Redux
-            dispatch(clearNewMessage());
+
+    const scrollToBottom = () => {
+        if (divRef.current) {
+            divRef.current.scrollTop = divRef.current.scrollHeight - divRef.current.clientHeight;
         }
-    }, [newMessage, dispatch]);
+    };
+
+
 
     const formatStringForRendering = (inputString) => {
         const urlRegex = /(https?:\/\/[^\s]+)/;
@@ -86,9 +89,59 @@ export default function ConvoDiv({ selectedUser, roomId, user }) {
         return { message, url }; // Return object with message and url properties
     };
 
+
+    useEffect(() => {
+        fetchConversation(roomId);
+    }, [roomId]);
+
+
+    useEffect(() => {
+        if (selectedUser) {
+            setConversation(null);
+        }
+    }, [selectedUser]);
+
+    useEffect(() => {
+        if (newMessage) {
+            console.log(newMessage);
+            setConversation(prevConversation => [...prevConversation, newMessage]);
+            dispatch(clearNewMessage());
+        }
+    }, [newMessage, dispatch]);
+
+    useEffect(() => {
+
+        const socket = io(process.env.REACT_APP_BACKEND_URL);
+
+        socket.on('get_message', (data) => {
+            if (user.username === data.to.username) {
+                let newMessage = {
+                    date: new Date(),
+                    from: data.from.email,
+                    message: data.message
+                }
+                setConversation(prevConversation => [...prevConversation, newMessage]);
+                dispatch(clearNewMessage());
+                // alert(`${data.from.email} sent you a message ${data.message}`);
+            }
+        });
+
+        return () => {
+            socket.off('get_message');
+        }
+    }, [])
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [newMessage, conversation]);
+
+
     return (
-        <div id="conversation" name="conversation" className="conversation">
-            {conversation && conversation.map((message, index) => {
+        <div ref={divRef} id="conversation" name="conversation" className="conversation">
+            {conversation ? conversation?.map((message, index) => {
+
+
+
                 const { message: messageText, url } = parseMessage(message?.message);
                 const linkMessage = formatStringForRendering(messageText);
                 const from = message.from;
@@ -112,7 +165,17 @@ export default function ConvoDiv({ selectedUser, roomId, user }) {
                         </div>
                     </div>
                 );
-            })}
+            }) :
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'column',
+                    gap: 10
+                }} id="conversation" name="conversation" className="conversation">
+                    <CircularProgress />
+                    <p>Loading...</p>
+                </div>}
         </div>
     );
 }

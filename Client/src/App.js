@@ -64,8 +64,9 @@ function App() {
       </SignedOut>
       <SignedIn>
         <Routes>
-          {/* <Route path='*' element={<Navigate to={'/'} />} /> */}
+          <Route path='/' element={<Navigate to={'/chats'} />} />
           <Route path="/*" element={<ChatPage currentUser={currentUser} />} />
+          <Route path="/home" element={<HomePage />} />
           <Route path="/dev" element={<DevPage />} />
         </Routes>
       </SignedIn>
