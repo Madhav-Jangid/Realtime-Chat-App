@@ -27,7 +27,7 @@ export default function InputFeild({ selectedUser, roomId, user }) {
     };
 
     const [imageUrl, setImageUrl] = useState(null);
-    const [messageLink, setMessageLink] = useState(null);
+    // const [messageLink, setMessageLink] = useState(null);
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];

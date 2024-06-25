@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setNewMessage, clearNewMessage } from '../features/newMessage/newMessageSlice';
+import { clearNewMessage } from '../features/newMessage/newMessageSlice';
 import { CircularProgress } from '@mui/material';
 import { io } from 'socket.io-client';
 
