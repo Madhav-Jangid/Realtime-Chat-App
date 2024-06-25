@@ -56,7 +56,8 @@ function App() {
     <div className="app">
       <SignedOut>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path='*' element={<Navigate to={'/home'} />} />
+          <Route path="/home" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Register />} />
         </Routes>
