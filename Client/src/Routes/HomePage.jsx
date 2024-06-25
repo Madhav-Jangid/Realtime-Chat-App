@@ -10,7 +10,7 @@ export default function HomePage() {
 
     return (
         <section className='page'>
-            Hello g
+            How are you brother
             <UserButton></UserButton>
             <Link to={'/login'}>Login</Link>
             <Link to={'/signup'}>Register</Link>
