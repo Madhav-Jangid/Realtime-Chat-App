@@ -1,0 +1,224 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;800&family=Poppins:wght@300;400;500;600;700&display=swap");
+
+* {
+    font-family: "Poppins", "sans-sarif";
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --white: #fff;
+    --black: #000;
+    --primary-text-bark: #3e8fff;
+    --primary-text-light: #1c2a4b;
+    --primary-blue6: #539bff;
+    --primary-blue4: #539bff;
+    --primary-blue3: #b6ccfe;
+    --primary-blue2: #d7e3fc;
+    --primary-blue1: #edf2fb;
+    --custom: #000000;
+    --custom2: #3d10f0;
+    --trans-02: all 0.2s ease;
+    --trans-03: all 0.3s ease;
+    --trans-04: all 0.4s ease;
+    --trans-04: all 0.5s ease;
+}
+
+body {
+    overflow-y: hidden;
+    background-color: var(--white);
+    transition: var(--trans-02);
+    color: var(--black);
+}
+
+body.dark {
+    --white: #000;
+    --black: #fff;
+    --primary-text-dark: #ffffff;
+    --primary-text-light: #3e8fff;
+    --primary-blue4: #1c2a4b;
+    --primary-blue3: #425a86;
+    --primary-blue2: #2e405f;
+    --primary-blue1: #192030;
+    --custom: #98c3ff;
+    --custom2: #0ef;
+}
+
+.SideNavBar {
+    height: 100%;
+    border-radius: inherit;
+    background-color: var(--primary-blue4);
+    position: relative;
+    z-index: 10;
+    transition: .2s width ease-in;
+}
+
+.highlighter {
+    content: " ";
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    background-color: var(--primary-blue2);
+    position: absolute;
+    top: 93px;
+    transition: .2s top ease-in;
+}
+
+.CaretRightButton {
+    position: absolute;
+    top: -77%;
+    left: 100%;
+    transform: translate(-50%, -50%);
+}
+
+.CaretRightButton .CaretRight {
+    color: var(--primary-text-light);
+    background-color: var(--white);
+    box-shadow: 0 0 0px 5px var(--primary-blue2);
+    border-radius: 50%;
+    border: 1px solid var(--primary-text-bark);
+    font-size: 24px;
+    padding: 2px;
+}
+
+.SideNavBar .sideNavIcons {
+    border-radius: inherit;
+    width: 100%;
+    flex-grow: 1;
+    height: 100%;
+    padding: 16px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sideNavIcons ul {
+    width: 95%;
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    list-style: none;
+}
+
+.sideNavIcons ul a {
+    display: flex;
+    color: var(--primary-text-light);
+    align-items: center;
+    width: 90%;
+    border-radius: 10px;
+    color: var(--primary-text-light);
+    text-decoration: none;
+}
+
+.profileDivImage {
+    padding: 0px 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.profileDivImage>span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 115px;
+    cursor: default;
+    position: relative;
+}
+
+
+.topIcon .avatarImage {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    margin: 10px 0;
+    border: 3px solid var(--primary-text-light);
+}
+
+.sideNavIcons ul a:hover {
+    background-color: var(--primary-blue3);
+}
+
+.sideNavIcons ul .MuiSvgIcon-root {
+    color: var(--primary-text-light);
+    font-size: 27px;
+}
+
+.phosphor-icon {
+    color: var(--primary-text-light);
+    font-size: 25px;
+    height: 25px;
+}
+
+
+.activeNavLink {
+    background-color: var(--white);
+}
+
+.activeNavLink span,
+.activeNavLink .phosphor-icon {
+    color: var(--primary-text-dark);
+}
+
+.activeNavLink:hover,
+.activeNavLink:hover .phosphor-icon {
+    background-color: transparent;
+    color: var(--primary-text-light);
+}
+
+.newNavLink {
+    color: var(--primary-text-light);
+    text-decoration: none;
+}
+
+.closedNav>nav>ul>a {
+    width: max-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.closedNav>nav>ul>a:hover::after {
+    content: attr(data-content);
+    position: absolute;
+    left: 130%;
+    background-color: var(--primary-text-light);
+    color: var(--white);
+    padding: 5px 10px;
+    border-radius: 5px;
+    z-index: 10;
+}
+
+.closedNav>nav>ul>a:hover::before {
+    content: '';
+    position: absolute;
+    left: 120%;
+    background-color: var(--primary-text-light);
+    color: var(--white);
+    height: 10px;
+    width: 10px;
+    transform: rotate(45deg);
+    z-index: 10;
+}
+
+.closedNav>nav ul span {
+    display: none;
+}
+
+
+.bottomIcons>li {
+    width: 90%;
+    color: var(--primary-text-light);
+    cursor: pointer;
+}
+
+.bottomIcons>li:hover {
+    background-color: var(--primary-blue3);
+    border-radius: 10px;
+}

@@ -1,0 +1,36 @@
+.chatPage {
+    height: 100vh;
+    width: 100%;
+    padding: 15px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+}
+
+.tempImageDisplayer {
+    position: absolute;
+    top: -20vh;
+    width: 100%;
+    height: 20vh;
+    border-radius: 10px 10px 0 0;
+    border: 2px solid var(--primary-text-light);
+    background-color: var(--primary-blue2);
+}
+
+.tempImageDisplayer img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.tempImageDisplayer button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.withImage {
+    border-radius: 0px 0px 10px 10px;
+}
