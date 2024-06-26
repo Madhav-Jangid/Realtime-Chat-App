@@ -47,6 +47,7 @@ body.dark {
 
 .SideNavBar {
     height: 100%;
+    min-width: 70px;
     border-radius: inherit;
     background-color: var(--primary-blue4);
     position: relative;

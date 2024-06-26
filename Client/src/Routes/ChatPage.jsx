@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Sidebar from '../Components/Sidebar';
 import '../css/ChatPage.css';
 import "../css/Allusers.css";
+import '../css/Responsive.css';
 import { Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import AllChats from '../Components/AllChats';
 import AllGroups from '../Components/AllGroups';
@@ -9,7 +10,9 @@ import AllNotifications from '../Components/AllNotifications';
 import { useDispatch } from 'react-redux';
 import { setSelectedUser } from '../features/selectedUser/selectedUserSlice';
 import Conversation from '../Converstaion/Conversation';
-
+import { Drawer, IconButton } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import { UserButton } from '@clerk/clerk-react';
 
 
 export default function ChatPage({ currentUser }) {
@@ -75,9 +78,27 @@ export default function ChatPage({ currentUser }) {
     }, [location, users]); // Include `location` and `users` in the dependency array
 
 
+    const [open, setOpen] = useState(false);
+
+    const toggleDrawer = (newOpen) => () => {
+        setOpen(newOpen);
+    };
+
     return (
         <section className='chatPage'>
-            <Sidebar />
+            <Sidebar active={null} drawer={false} />
+            <IconButton id='shortNavIcon' onClick={toggleDrawer(true)}>
+                <MenuIcon />
+            </IconButton>
+
+            <div id='userProfileButton'>
+                <UserButton showName />
+            </div>
+
+            <Drawer open={open} onClose={toggleDrawer(false)}>
+                <Sidebar active={open} drawer={true} />
+            </Drawer>
+
             <Routes>
                 <Route path='/chats/*' element={
                     <AllChats

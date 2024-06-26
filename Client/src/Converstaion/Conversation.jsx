@@ -38,16 +38,16 @@ export default function Conversation() {
     }, [selectedUser, user]);
 
 
+
     const checkUrlForChatUser = () => {
         const pathname = location.pathname;
         if (pathname.startsWith('/chats')) {
             const chatUser = pathname.split('/chats')[1];
             if (chatUser && chatUser.trim().length > 0 && chatUser !== '/') {
                 console.log('Chat user found:', chatUser);
-                // alert(chatUser);
                 return
             }
-        } 
+        }
         setIsContainUser(false)
     };
 
@@ -59,7 +59,13 @@ export default function Conversation() {
         <>
             {
                 selectedUser?.username && isContainUser ?
-                    <div className='convoComponent'>
+                    <div 
+                    style={window.innerWidth < 601 ? {
+                        zIndex: '50',
+                    } : {
+                        zIndex: '-50',
+                    }}
+                     className='convoComponent'>
                         <TopNavConvo selectedUser={selectedUser} />
                         <Suspense fallback={
                             <div style={{

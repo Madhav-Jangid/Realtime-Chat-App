@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../css/SideBar.css';
 import { IconButton } from '@mui/material';
 import { Bell, CaretLeft, CaretRight, ChatTeardropDots, Gear, Users, WechatLogo } from '@phosphor-icons/react';
@@ -8,7 +8,7 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import { UserButton } from '@clerk/clerk-react';
 
 
-export default function SideBar({ active }) {
+export default function SideBar({ active, drawer }) {
     const location = useLocation();
 
     const [width, setWidth] = useState(80);
@@ -23,6 +23,12 @@ export default function SideBar({ active }) {
         setIsNavOpened(!isNavOpened);
     };
 
+    useEffect(() => {
+        if (active) {
+            ShowLeftnav()
+        }
+    }, [active])
+
     const [theme, setTheme] = useState(false);
     const toggleTheme = () => {
         if (theme) {
@@ -34,10 +40,10 @@ export default function SideBar({ active }) {
     };
 
     return (
-        <div className={`SideNavBar ${!isNavOpened ? null : 'closedNav'}`} style={{ width: width }}>
+        <div className={`SideNavBar ${!isNavOpened  ? null : 'closedNav'}`} style={active ? { display: 'block',width: 250 } : { width: width }}>
             <nav className="sideNavIcons">
                 <ul className='topIcon'>
-                    <li className={`profileDivImage ${active === 'profile' ? 'activeNavLink' : 'nonActiveNavLink'}`}>
+                    <li>
                         <WechatLogo size={40} />
                         <span>{process.env.REACT_APP_APP_NAME}</span>
                     </li>
@@ -101,9 +107,11 @@ export default function SideBar({ active }) {
 
                 </ul>
             </nav>
-            <IconButton onClick={() => ShowLeftnav()} className='CaretRightButton'>
-                {isNavOpened ? <CaretRight className='CaretRight' /> : <CaretLeft className='CaretRight' />}
-            </IconButton>
+            {!drawer &&
+                <IconButton onClick={() => ShowLeftnav()} className='CaretRightButton'>
+                    {isNavOpened ? <CaretRight className='CaretRight' /> : <CaretLeft className='CaretRight' />}
+                </IconButton>
+            }
         </div>
     );
 }

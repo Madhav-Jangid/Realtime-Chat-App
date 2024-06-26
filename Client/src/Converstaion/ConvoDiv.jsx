@@ -96,6 +96,7 @@ export default function ConvoDiv({ state, selectedUser, roomId, user }) {
     }, [roomId]);
 
 
+
     useEffect(() => {
         if (selectedUser) {
             setConversation(null);
@@ -140,9 +141,6 @@ export default function ConvoDiv({ state, selectedUser, roomId, user }) {
     return (
         <div ref={divRef} id="conversation" name="conversation" className="conversation">
             {conversation ? conversation?.map((message, index) => {
-
-
-
                 const { message: messageText, url } = parseMessage(message?.message);
                 const linkMessage = formatStringForRendering(messageText);
                 const from = message.from;

@@ -1,0 +1,118 @@
+.allUsers {
+    min-width: 280px;
+}
+
+#shortNavIcon {
+    display: none;
+}
+
+#backButtonForChat {
+    display: none;
+}
+
+.ShortMenu {
+    display: none;
+}
+
+.longMenu {
+    display: block;
+}
+
+.convoComponent,
+.CommonComponent {
+    position: relative;
+    max-width: 70vh;
+    z-index: -10;
+}
+
+#userProfileButton {
+    display: none;
+}
+
+@media (max-width: 880px) {
+
+    section.chatPage {
+        padding: 0;
+        border-radius: 5px;
+        gap: 0;
+    }
+
+    .CommonComponent,
+    .convoComponent {
+        min-width: 400px;
+    }
+
+    .allUsers {
+        min-width: 200px;
+        max-width: 100%;
+        flex-grow: 1;
+    }
+}
+
+@media (max-width: 700px) {
+    .SideNavBar {
+        display: none;
+    }
+
+    .mainHeading {
+        padding-left: 45px;
+    }
+
+    .mainHeading svg {
+        display: none;
+    }
+
+    #shortNavIcon {
+        display: block;
+        position: absolute;
+        top: 32px;
+        left: 14px;
+        z-index: 20;
+    }
+}
+
+@media (max-width: 601px) {
+    .allUsers {
+        position: absolute;
+        width: 100vw;
+        min-width: 200px;
+    }
+
+    #backButtonForChat {
+        display: block;
+        height: 40px;
+        width: 40px;
+        color: #000;
+        font-size: 20px;
+        z-index: 53;
+    }
+
+    .longMenu {
+        display: none;
+    }
+
+    .ShortMenu {
+        display: block;
+    }
+
+    .CommonComponent {
+        display: none;
+    }
+
+    .convoComponent {
+        width: 100vw;
+        min-width: 99vw;
+        max-width: 100vw;
+        z-index: 40;
+    }
+
+    #userProfileButton {
+        display: block;
+        position: absolute;
+        top: 40px;
+        right: 30px;
+        z-index: 20;
+    }
+}
+
+@media (max-width: 450px) {}
