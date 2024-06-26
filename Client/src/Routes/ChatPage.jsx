@@ -78,27 +78,13 @@ export default function ChatPage({ currentUser }) {
     }, [location, users]); // Include `location` and `users` in the dependency array
 
 
-    const [open, setOpen] = useState(false);
 
-    const toggleDrawer = (newOpen) => () => {
-        setOpen(newOpen);
-    };
 
     return (
         <section className='chatPage'>
             <Sidebar active={null} drawer={false} />
-            <IconButton id='shortNavIcon' onClick={toggleDrawer(true)}>
-                <MenuIcon />
-            </IconButton>
-
-            <div id='userProfileButton'>
-                <UserButton showName />
-            </div>
-
-            <Drawer open={open} onClose={toggleDrawer(false)}>
-                <Sidebar active={open} drawer={true} />
-            </Drawer>
-
+            
+       
             <Routes>
                 <Route path='/chats/*' element={
                     <AllChats

@@ -9,7 +9,8 @@ import { setNewMessage } from '../features/newMessage/newMessageSlice';
 import { io } from 'socket.io-client';
 
 export default function InputFeild({ selectedUser, roomId, user }) {
-
+    
+    const socket = io(process.env.REACT_APP_BACKEND_URL);
 
     const dispatch = useDispatch();
 
@@ -84,7 +85,6 @@ export default function InputFeild({ selectedUser, roomId, user }) {
 
     const SendMessageToUser = async () => {
 
-        const socket = io(process.env.REACT_APP_BACKEND_URL);
 
         const messageToSend = imageUrl ? `${message}#$IMG$#${imageUrl}` : message;
 

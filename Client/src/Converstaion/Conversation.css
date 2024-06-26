@@ -182,6 +182,7 @@
   flex-direction: column;
   justify-content: space-between;
   /* text-align: end; */
+  text-wrap: wrap;
   max-width: 60%;
   padding: 10px 15px 5px;
   gap: 0;

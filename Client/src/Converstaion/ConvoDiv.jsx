@@ -7,6 +7,7 @@ import { io } from 'socket.io-client';
 
 export default function ConvoDiv({ state, selectedUser, roomId, user }) {
 
+    const socket = io(process.env.REACT_APP_BACKEND_URL);
 
 
     const dispatch = useDispatch();
@@ -113,7 +114,6 @@ export default function ConvoDiv({ state, selectedUser, roomId, user }) {
 
     useEffect(() => {
 
-        const socket = io(process.env.REACT_APP_BACKEND_URL);
 
         socket.on('get_message', (data) => {
             if (user.username === data.to.username) {

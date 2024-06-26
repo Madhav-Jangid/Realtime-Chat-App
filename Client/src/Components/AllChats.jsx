@@ -1,8 +1,10 @@
 import React, { Suspense, useState, useEffect } from 'react';
-import { CircularProgress, IconButton } from '@mui/material';
+import { CircularProgress, Drawer, IconButton } from '@mui/material';
 import { ChatTeardropDots } from '@phosphor-icons/react';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { useUser } from '@clerk/clerk-react';
+import { UserButton, useUser } from '@clerk/clerk-react';
+import SideBar from './Sidebar';
+import MenuIcon from '@mui/icons-material/Menu';
 const UserSlide = React.lazy(() => import('./UserSlide.'));
 
 export default function AllChats({ heading, users, highlight }) {
@@ -95,11 +97,33 @@ export default function AllChats({ heading, users, highlight }) {
         fetchUserInfo(currentUser?.primaryEmailAddress?.emailAddress);
     }, [users, currentUser])
 
+    const [open, setOpen] = useState(false);
+
+    const toggleDrawer = (newOpen) => () => {
+        setOpen(newOpen);
+    };
+
+
     return (
         <div className='allUsers'>
+            <Drawer open={open} onClose={toggleDrawer(false)}>
+                <SideBar active={open} drawer={true} />
+            </Drawer>
+
+
             <h3 className='mainHeading'>
+
+                <IconButton id='shortNavIcon' onClick={toggleDrawer(true)}>
+                    <MenuIcon />
+                </IconButton>
+
                 <ChatTeardropDots />
+
                 <span>{heading}</span>
+
+                <div id='userProfileButton'>
+                    <UserButton showName />
+                </div>
             </h3>
             <div className="searchUserInputFeild">
                 <input

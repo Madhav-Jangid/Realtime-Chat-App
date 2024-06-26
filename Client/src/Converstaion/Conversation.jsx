@@ -63,7 +63,7 @@ export default function Conversation() {
                     style={window.innerWidth < 601 ? {
                         zIndex: '50',
                     } : {
-                        zIndex: '-50',
+                        zIndex: '1',
                     }}
                      className='convoComponent'>
                         <TopNavConvo selectedUser={selectedUser} />
