@@ -19,7 +19,7 @@
 }
 
 
-.convoComponent{
+.convoComponent {
     position: relative;
     max-width: 70vh;
     z-index: -10;
@@ -120,13 +120,17 @@
         z-index: 40;
     }
 
-    .convoComponent .convoTopNav{
+    .convoComponent .convoTopNav {
         position: sticky;
         top: 0;
         z-index: 31;
     }
 
-    .convoComponent .convoInputs{
+    .convoComponent .conversation {
+        padding-bottom: 50px;
+    }
+
+    .convoComponent .convoInputs {
         position: sticky;
         bottom: 0;
         z-index: 31;
