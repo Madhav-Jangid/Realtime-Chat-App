@@ -1,3 +1,4 @@
+const { Server } = require('socket.io');
 
 function setupSocket(httpServer) {
     const io = new Server(httpServer, { cors: { origin: "*", methods: ["GET", "POST"] } });
