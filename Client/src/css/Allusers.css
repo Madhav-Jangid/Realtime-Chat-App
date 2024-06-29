@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@200&family=Josefin+Sans:wght@200&display=swap');
 
 
-.MainScreen{
+.MainScreen {
     display: flex;
     gap: 5px;
     align-items: center;
@@ -36,7 +36,7 @@
     border-radius: inherit;
 }
 
-.mainHeading svg{
+.mainHeading svg {
     font-size: 30px;
     margin: 0 15px 0 10px;
 }
@@ -53,11 +53,11 @@
     font-size: 15px;
 }
 
-.allUsers input:focus-within{
+.allUsers input:focus-within {
     outline: 2px solid var(--primary-blue);
 }
 
-.allUsers input::placeholder{
+.allUsers input::placeholder {
     color: var(--primary-text-light);
 }
 
@@ -71,7 +71,7 @@
     background-color: var(--white);
 }
 
-.userSlide{
+.userSlide {
     padding: 15px 10px;
     display: flex;
     gap: 10px;
@@ -81,19 +81,20 @@
     background-color: var(--primary-blue2);
 }
 
-.userSlide:hover{
+.userSlide:hover {
     background-color: var(--primary-blue1);
     box-shadow: none;
 }
 
-.userDetails{
+.userDetails {
     flex-grow: 1;
     width: 100%;
     cursor: pointer;
 }
 
 
-.userDetails h3,.userDetails h5{
+.userDetails h3,
+.userDetails h5 {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -101,13 +102,13 @@
     font-family: 'Exo 2', 'Josefin Sans', sans-serif;
 }
 
-.userDetails h5{
+.userDetails h5 {
     width: 65%;
     opacity: .7;
     margin: 0;
 }
 
-.noMessages{
+.noMessages {
     height: 74%;
     width: 100%;
     display: flex;
@@ -115,26 +116,26 @@
     justify-content: center;
 }
 
-.noMessages span{
+.noMessages span {
     text-align: center;
 }
 
-.searchUserInputFeild{
+.searchUserInputFeild {
     border-radius: inherit;
     position: relative;
 }
 
-.searchUserInputFeild .crossIcon{
+.searchUserInputFeild .crossIcon {
     position: absolute;
     right: 10px;
     top: 11px;
     color: var(--primary-blue4);
 }
 
-.avatarImage{
+.avatarImage {
     width: 35px;
     height: 35px;
     border-radius: 50%;
-  object-fit: contain;
-  object-position: center;
+    object-fit: contain;
+    object-position: center;
 }

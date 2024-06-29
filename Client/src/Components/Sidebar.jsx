@@ -16,7 +16,7 @@ export default function SideBar({ active, drawer }) {
 
     const ShowLeftnav = () => {
         if (isNavOpened) {
-            setWidth(250);
+            setWidth(280);
         } else {
             setWidth(80);
         }
@@ -40,7 +40,7 @@ export default function SideBar({ active, drawer }) {
     };
 
     return (
-        <div className={`SideNavBar ${!isNavOpened  ? null : 'closedNav'}`} style={active ? { display: 'block',width: 250 } : { width: width }}>
+        <div className={`SideNavBar ${!isNavOpened ? null : 'closedNav'}`} style={active ? { display: 'block', width: 280 } : { width: width }}>
             <nav className="sideNavIcons">
                 <ul className='topIcon'>
                     <li>
@@ -85,27 +85,27 @@ export default function SideBar({ active, drawer }) {
                     </Link>
                 </ul>
 
-                <ul className='bottomIcons'>
 
+                <>
+                    <ul className='bottomIcons'>
+                        <li onClick={() => {
+                            setTheme(!theme);
+                            toggleTheme();
+                        }} style={isNavOpened ? { display: 'flex', alignItems: 'center', justifyContent: 'center' } : { display: 'block' }}>
+                            <IconButton >
+                                {!theme ?
+                                    <DarkModeIcon /> :
+                                    <WbSunnyIcon />
+                                }
+                            </IconButton>
+                            {!isNavOpened ? <span>{!theme ? 'Dark Theme' : 'Light Theme'}</span> : null}
+                        </li>
 
-                    <li onClick={() => {
-                        setTheme(!theme);
-                        toggleTheme();
-                    }} style={isNavOpened ? { display: 'flex', alignItems: 'center', justifyContent: 'center' } : { display: 'block' }}>
-                        <IconButton >
-                            {!theme ?
-                                <DarkModeIcon /> :
-                                <WbSunnyIcon />
-                            }
-                        </IconButton>
-                        {!isNavOpened ? <span>{!theme ? 'Dark Theme' : 'Light Theme'}</span> : null}
-                    </li>
-
-
-                    <UserButton />
-
-
-                </ul>
+                        <div className='sideNavUserIcon'>
+                            {isNavOpened ? <UserButton /> : <UserButton showName />}
+                        </div>
+                    </ul>
+                </>
             </nav>
             {!drawer &&
                 <IconButton onClick={() => ShowLeftnav()} className='CaretRightButton'>

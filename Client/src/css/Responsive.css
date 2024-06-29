@@ -126,21 +126,14 @@
         z-index: 31;
     }
 
-    .convoComponent .conversation {
-        padding-bottom: 80px;
-    }
-
-    .convoComponent .convoInputs {
-        position: sticky;
-        bottom: 0;
-        z-index: 31;
-    }
-
+ 
 
     #userProfileButton {
         display: block;
         z-index: 20;
     }
+
+    
 }
 
 @media (max-width: 450px) {}

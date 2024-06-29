@@ -143,7 +143,9 @@ export default function AllChats({ heading, users, highlight }) {
             {searchedUser ?
                 searchResults?.length !== 0 ?
                     searchResults?.map(user => (
-                        <UserSlide key={user.id} user={user} add={searchedUser} serverUser={serverUser} />
+                        user.username !== currentUser.username && (
+                            <UserSlide key={user.id} user={user} add={searchedUser} serverUser={serverUser} />
+                        )
                     )) : <div className="noResultsMessage" style={{ textAlign: 'center', marginTop: '2rem' }}>No users found.</div>
                 :
                 <Suspense fallback={

@@ -4,6 +4,7 @@
   background-color: var(--primary-blue1);
   border-radius: inherit;
   padding: 15px 10px;
+  padding-bottom: 0;
   width: 100%;
   max-width: 70vw;
 }
@@ -52,17 +53,19 @@
 }
 
 .convoInputs {
-  padding: 10px;
+  position: sticky !important;
+  bottom: 10px !important;
+  padding: 10px 10px 0 10px;
   border-radius: inherit;
   display: flex;
   gap: 4px;
-  background-color: var(--primary-blue2);
   justify-content: space-evenly;
   position: relative;
+  background-color: #ffffff00;
 }
 
 .convoInputs input {
-  background-color: var(--primary-blue1);
+  background-color: #ffffff00;
   color: var(--primary-text-light);
   width: 100%;
   border: none;
@@ -90,13 +93,12 @@
 
 
 .avatarImage {
-  width: min(2.9rem, 2.9rem);
-  height: min(2.9rem, 2.9rem);
+  min-width: 40px;
+  min-height: 40px;
   border-radius: 50%;
-  aspect-ratio: 1/1;
   object-fit: cover;
   object-position: center;
-  border: 2px solid #0001;
+  border: 2px solid rgba(0, 0, 0, 0.451);
 }
 
 .CommonComponent {
@@ -181,14 +183,19 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  /* text-align: end; */
   text-wrap: wrap;
   max-width: 60%;
-  padding: 10px 15px 5px;
+  padding: 10px;
+  /* padding-bottom: 25px; */
   gap: 0;
   background-color: var(--primary-blue3);
-  border-radius: 20px;
+  border-radius: 6px;
   border-bottom-right-radius: 0;
+  position: relative;
+}
+
+.textMessageCont {
+  overflow-wrap: break-word;
   position: relative;
 }
 
@@ -198,12 +205,36 @@
   text-align: start;
 }
 
-.textMessageCont h6 {
-  font-size: 12px;
-
+.textMessageCont h4 {
+  color: var(--custom) !important;
+  font-weight: 400;
+  opacity: 1.1;
 }
 
-.textMessageCont h4,
+.textMessageCont h4::after {
+  content: ''; /* Use empty content */
+  display: inline-block; /* Ensure it's treated as a block-level element */
+  min-width: 50px; /* Minimum width */
+  height: 100%; /* Adjust height as needed */
+  background-color: transparent; /* Optionally, set a background color */
+}
+
+.textMessageCont h6 {
+  font-size: 12px;
+}
+
+
+.textMessageCont>span {
+  height: 10px !important;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  align-self: flex-end;
+  text-wrap: nowrap;
+  font-size: 10px !important;
+}
+
+/* .textMessageCont h4,
 .textMessageCont h6 {
   margin: 0;
   padding: 0;
@@ -212,14 +243,12 @@
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
+} */
 
 .messageFromCurrentUser span,
 .messageFromSecondUser span {
   color: var(--primary-text-dark);
   text-align: start;
-  min-block-size: 100%;
-  margin-top: 5px;
   font-size: 12px;
 }
 
@@ -246,7 +275,7 @@
 
 .messageFromSecondUser .textMessageCont {
   background-color: var(--primary-blue4);
-  border-radius: 0px 10px 10px 10px;
+  border-radius: 6px;
   text-align: start;
 }
 
@@ -314,4 +343,79 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+
+
+.convoInputIntractions {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 5px;
+  width: 100%;
+  padding: 5px;
+  border-radius: 5px;
+  flex-grow: 1;
+  background-color: var(--primary-blue3);
+  position: relative;
+}
+
+.convoInputIntractions button {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.convoInputIntractions button label {
+  height: 90%;
+  width: 90%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.convoInputForMessage {
+  align-self: center;
+  height: 100%;
+  flex-grow: 1;
+}
+
+.convoInputIntractions .css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
+  display: flex;
+  height: 80%;
+  align-items: flex-end;
+  justify-content: center;
+  border-radius: 2px;
+  border: none;
+  outline: none;
+  padding: 0;
+}
+
+
+.convoInputIntractions .css-dpjnhs-MuiInputBase-root-MuiOutlinedInput-root {
+  padding: 0;
+  height: 80%;
+  width: 100%;
+  border: none;
+  outline: none;
+}
+
+.convoInputIntractions .css-dpjnhs-MuiInputBase-root-MuiOutlinedInput-root:not(:focus) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+
+.convoInputIntractions .css-1d3z3hw-MuiOutlinedInput-notchedOutline {
+  border: none;
+}
+
+.convoInputs .convoInputIntractions~button:last-of-type {
+  align-self: flex-end !important;
 }

@@ -10,13 +10,13 @@ import { useLocation } from 'react-router-dom';
 const ConvoDiv = React.lazy(() => import('./ConvoDiv'));
 
 export default function Conversation() {
+    
+    const location = useLocation();
+    
+    const [isContainUser, setIsContainUser] = useState(false);
+    
     const { user } = useUser();
     const [roomId, setRoomId] = useState('');
-
-    const location = useLocation();
-
-    const [isContainUser, setIsContainUser] = useState(false);
-
     const selectedUser = useSelector(selectSelectedUser);
 
     function concatenateAndSortByCharacter(email1, email2) {
@@ -53,7 +53,7 @@ export default function Conversation() {
 
     useEffect(() => {
         checkUrlForChatUser();
-    }, [location.pathname]);
+    }, [location]);
 
     return (
         <>

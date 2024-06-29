@@ -16,12 +16,12 @@ function setupSocket(httpServer) {
         });
 
         socket.on('error', (error) => {
-            console.error(`Socket error: ${error}`);
+            console.log(`Socket error: ${error}`);
         });
     });
 
     io.on('error', (error) => {
-        console.error(`Socket.io error: ${error}`);
+        console.log(`Socket.io error: ${error}`);
     });
 
     return io;
