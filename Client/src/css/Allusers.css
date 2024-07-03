@@ -105,6 +105,9 @@
 .userDetails h5 {
     width: 65%;
     opacity: .7;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     margin: 0;
 }
 
@@ -138,4 +141,75 @@
     border-radius: 50%;
     object-fit: contain;
     object-position: center;
+}
+
+.notification>.mainHeading {
+    margin-bottom: 20px;
+}
+
+.notification>ul {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column-reverse;
+
+}
+
+.notiContainer {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+    padding: 5px;
+    background-color: var(--primary-blue1);
+    border-radius: 3px;
+    margin: 5px 0;
+    border: 1px solid var(--primary-blue3);
+}
+
+.notiContainerStatus {
+    width: 100%;
+    padding: 10px 5px;
+    text-align: center;
+    border-radius: inherit;
+}
+
+.reqContainer {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+    padding: 5px;
+    background-color: var(--primary-blue1);
+    border-radius: 3px;
+    margin: 5px 0;
+    border: 1px solid var(--primary-blue3);
+}
+
+.reqContainer>p {
+    width: 100%;
+    max-width: 100%;
+    text-wrap: wrap;
+}
+
+.reqContainerIcons {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.reqContainerIcons>button{
+    color: #fff;
+    background-color: #64fe66;
+}
+
+.reqContainerIcons>button:last-of-type{
+    background-color: #fd4b4b;
+}
+.reqContainerIcons>button:hover{
+    background-color: var(--primary-blue3);
 }

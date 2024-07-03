@@ -4,11 +4,15 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useUser } from '@clerk/clerk-react';
 import parse from 'html-react-parser';
+import DoneIcon from '@mui/icons-material/Done';
+
+
 
 export default function UserSlide({ user, add, serverUser, highlight }) {
 
     const { user: currentUser } = useUser();
 
+    const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -17,6 +21,7 @@ export default function UserSlide({ user, add, serverUser, highlight }) {
         navigate(`/chats/${user.username}`)
     };
 
+    const [requestStatus, setRequestStatus] = useState(false);
     const [lastMessage, setLastMessage] = useState('');
     const [roomId, setRoomId] = useState('');
 
@@ -42,7 +47,7 @@ export default function UserSlide({ user, add, serverUser, highlight }) {
 
     const fetchConversation = async (roomId) => {
         try {
-            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/conversation`, {
+            const response = await fetch(`${BACKEND_URL}/conversation`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -65,6 +70,43 @@ export default function UserSlide({ user, add, serverUser, highlight }) {
     };
 
 
+    const sendFriendRequest = async () => {
+        try {
+            const response = await fetch(`${BACKEND_URL}/addFriend`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: serverUser?.name,
+                    sendername: user?.username,
+                    user: serverUser?.email,
+                    isAccepted: false,
+                    to: user?.email_addresses[0]?.email_address,
+                }),
+            });
+            if (!response.ok) {
+                const data = await response.json();
+                if (data.already) {
+                    alert(data.message);
+                } else {
+                    console.log(data);
+                }
+                return;
+            } else {
+                const requestStatus = await response.json();
+                if (requestStatus.status) {
+                    setRequestStatus(true);
+                    alert(requestStatus.message);
+                } else {
+                    console.log(requestStatus.message);
+                }
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
 
 
     useEffect(() => {
@@ -76,28 +118,29 @@ export default function UserSlide({ user, add, serverUser, highlight }) {
             backgroundColor: 'var(--primary-blue1)'
         } : null}
             id={user.email_addresses[0].email_address} className='userSlide' onClick={(e) => {
-                if(serverUser?.friendList?.includes(user?.email_addresses[0].email_address)){
+                if (serverUser?.friendList?.includes(user?.email_addresses[0].email_address)) {
                     handleUserClick();
-                }else{
-                    alert(`Sorry, ${user.username} is not a friend.`);
                 }
             }}>
             <img height={35} width={35} className='avatarImage' src={user.image_url} alt={`${user.username}'s_Image`} />
 
             <div className='userDetails'>
                 <h3>{user.username}</h3>
-                {lastMessage && <h5>{parse(lastMessage)}</h5>}
+                {lastMessage && <h5>{lastMessage.replace(/<br \/>/g,"..")}</h5>}
             </div>
             {
                 add && !serverUser?.friendList?.includes(user?.email_addresses[0].email_address) ?
                     <IconButton onClick={() => {
                         if (user?.email_addresses[0].email_address) {
-                            alert(user.username);
+                            sendFriendRequest();
                         } else {
                             console.log('id Hani');
                         }
                     }}>
-                        <PersonAddIcon></PersonAddIcon>
+                        {!requestStatus ?
+                            <PersonAddIcon></PersonAddIcon> :
+                            <DoneIcon />
+                        }
                     </IconButton> : null
             }
         </div>

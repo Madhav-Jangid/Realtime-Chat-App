@@ -212,11 +212,16 @@
 }
 
 .textMessageCont h4::after {
-  content: ''; /* Use empty content */
-  display: inline-block; /* Ensure it's treated as a block-level element */
-  min-width: 50px; /* Minimum width */
-  height: 100%; /* Adjust height as needed */
-  background-color: transparent; /* Optionally, set a background color */
+  content: '';
+  /* Use empty content */
+  display: inline-block;
+  /* Ensure it's treated as a block-level element */
+  min-width: 50px;
+  /* Minimum width */
+  height: 100%;
+  /* Adjust height as needed */
+  background-color: transparent;
+  /* Optionally, set a background color */
 }
 
 .textMessageCont h6 {
@@ -393,6 +398,7 @@
   border: none;
   outline: none;
   padding: 0;
+  color: var(--custom);
 }
 
 
@@ -402,6 +408,8 @@
   width: 100%;
   border: none;
   outline: none;
+  color: var(--custom);
+
 }
 
 .convoInputIntractions .css-dpjnhs-MuiInputBase-root-MuiOutlinedInput-root:not(:focus) {
@@ -418,4 +426,20 @@
 
 .convoInputs .convoInputIntractions~button:last-of-type {
   align-self: flex-end !important;
+}
+
+.convoInputs>.convoInputIntractions>button>label>svg {
+  fill: var(--custom);
+}
+
+.convoInputs>.convoInputIntractions>button>svg {
+  fill: var(--custom);
+}
+
+.convoInputs>button:last-of-type {
+  background-color: var(--primary-blue4);
+}
+
+.convoInputs>button:last-of-type>svg {
+  fill: var(--custom);
 }

@@ -25,7 +25,7 @@ if (cluster.isPrimary) {
     const PORT = process.env.PORT || 5000;
 
     app.use(bodyParser.json({ limit: '50mb' }));
-    app.use(bodyParser.urlencoded({ limit: '50mb' , extended: true }));
+    app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
     app.use(cors({ origin: "*" }));
 
     const httpServer = createServer(app);
@@ -47,6 +47,10 @@ if (cluster.isPrimary) {
         { path: '/conversation', route: './routes/chats' },
         { path: '/conversation/message', route: './routes/convoMessage' },
         { path: '/user', route: './routes/getUser' },
+        { path: '/addFriend', route: './routes/AddFriend' },
+        { path: '/getNotifications', route: './routes/getNotifications' },
+        { path: '/getFriendRequests', route: './routes/getFriendRequests' },
+        { path: '/accept', route: './routes/acceptFriendRequest' },
     ];
 
     routes.forEach(({ path, route }) => {

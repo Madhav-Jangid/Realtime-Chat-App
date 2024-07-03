@@ -63,7 +63,7 @@ export default function InputField({ selectedUser, roomId, user }) {
         if (chatData) {
             const newMessage = {
                 from: from,
-                message: message.replace(/\n/g, '<br />'), // Replace newlines with <br /> when storing the message
+                message: message.replace(/\n/g, '<br />'),
                 date: new Date(),
             };
             dispatchNewMessage(newMessage);
@@ -202,20 +202,20 @@ export default function InputField({ selectedUser, roomId, user }) {
                         multiline
                         maxRows={4}
                         type="text"
-                        placeholder={`Type a message for ${selectedUser.username}`}
+                        placeholder={`Type a message`}
                         name="message"
                         value={message}
                         onChange={(e) => {
                             setMessage(e.target.value);
                         }}
                         onKeyUp={(event) => {
-                            if(event.key === 'Enter'){
-                                event.preventDefault();
+                            if (event.key === 'Enter' && !event.shiftKey) {
+                                // event.preventDefault();
                                 SendMessageToUser();
                             }
-                            if (event.key === 'Enter' && !event.shiftKey) {
+                            if (event.key === 'Enter' && event.shiftKey) {
                                 event.preventDefault();
-                                SendMessageToUser();
+                                // SendMessageToUser();
                             }
                         }}
                     />
@@ -232,7 +232,7 @@ export default function InputField({ selectedUser, roomId, user }) {
                 </IconButton>
             </div>
 
-            
+
         </>
     );
 }

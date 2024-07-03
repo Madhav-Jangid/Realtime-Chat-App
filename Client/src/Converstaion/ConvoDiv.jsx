@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { clearNewMessage } from '../features/newMessage/newMessageSlice';
 import { CircularProgress } from '@mui/material';
@@ -101,6 +101,7 @@ export default function ConvoDiv({ state, selectedUser, roomId, user }) {
         }
     }, [newMessage, dispatch]);
 
+
     useEffect(() => {
         socket.on('get_message', (data) => {
             if (user.username === data.to.username) {
@@ -113,11 +114,11 @@ export default function ConvoDiv({ state, selectedUser, roomId, user }) {
                 dispatch(clearNewMessage());
             }
         });
-
         return () => {
+            socket.disconnect();
             socket.off('get_message');
         };
-    }, []);
+    }, [socket]);
 
     useEffect(() => {
         scrollToBottom();
@@ -177,3 +178,9 @@ export default function ConvoDiv({ state, selectedUser, roomId, user }) {
         </div>
     );
 }
+
+
+// <div dangerouslySetInnerHTML={{ __html: message.replace(/\n/g, '<br />') }} />
+
+
+// where to add this

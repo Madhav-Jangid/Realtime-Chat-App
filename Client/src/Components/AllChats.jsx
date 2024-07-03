@@ -78,7 +78,7 @@ export default function AllChats({ heading, users, highlight }) {
 
             const userInfo = await response.json();
             setServerUser(userInfo.user);
-            findFriends(userInfo.user)
+            findFriends(userInfo.user);
             // console.log(serverUser);
         } catch (error) {
             console.error(error);
@@ -148,24 +148,27 @@ export default function AllChats({ heading, users, highlight }) {
                         )
                     )) : <div className="noResultsMessage" style={{ textAlign: 'center', marginTop: '2rem' }}>No users found.</div>
                 :
-                <Suspense fallback={
-                    <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }} id="conversation" name="conversation" className="conversation">
-                        <CircularProgress />
-                    </div>}>
-                    {friendList ?
+
+
+                friendList ?
+                    friendList.length !== 0 ?
                         friendList?.map((user) => {
                             return (
                                 <UserSlide highlight={highlight} key={user.id} user={user} add={false} serverUser={serverUser} />
                             )
-                        }) : <div className='noMessages'>
+                        }) :
+                        <div className='noMessages'>
                             <span>You can add friends by searching them and sending them friend request.</span>
-                        </div>
-                    }
-                </Suspense>}
+                        </div> : <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: '100%',
+                            height: '70%'
+                        }}>
+                        <CircularProgress />
+                    </div>
+            }
         </div >
     );
 }

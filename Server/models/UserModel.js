@@ -49,6 +49,24 @@ const userSchema = mongoose.Schema({
             type: Date,
             default: Date.now()
         }
+    }],
+    notifications: [{
+        user: {
+            type: String,
+            required: true
+        },
+        message: {
+            type: String,
+            required: true
+        },
+        date: {
+            type: Date,
+            default: Date.now
+        },
+        isRead: {
+            type: Boolean,
+            default: false
+        }
     }]
 });
 

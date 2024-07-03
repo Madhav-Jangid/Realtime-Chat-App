@@ -4,7 +4,7 @@ const chatModel = require('../models/ChatModel.js');
 
 router.post('/', async (req, res) => {
     const { conversationId } = req.body;
-    console.log(conversationId);
+    // console.log(conversationId);
     if (!conversationId) {
         return res.status(400).json({ message: 'conversationId is required' });
     }

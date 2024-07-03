@@ -57,12 +57,12 @@ export default function SideBar({ active, drawer }) {
                         </li>
                     </Link>
 
-                    <Link data-content="Groups" className={location.pathname.endsWith('groups') ? 'activeNavLink' : 'nonActiveNavLink'} to={'/groups'}>
+                    <Link data-content="Friend Requests" className={location.pathname.endsWith('friend-requests') ? 'activeNavLink' : 'nonActiveNavLink'} to={'/friend-requests'}>
                         <li className='newNavLink'>
                             <IconButton>
                                 <Users className='phosphor-icon' />
                             </IconButton>
-                            <span>Groups</span>
+                            <span>Friend Requests</span>
                         </li>
                     </Link>
 

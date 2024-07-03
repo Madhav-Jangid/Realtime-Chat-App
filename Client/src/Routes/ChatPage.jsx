@@ -100,9 +100,9 @@ export default function ChatPage({ currentUser }) {
                         users={users}
                     />
                 } />
-                <Route path='/groups' element={
+                <Route path='/friend-requests' element={
                     <AllGroups
-                        heading={'Groups'}
+                        heading={'Friend Requests'}
                         users={users}
                     />
                 } />

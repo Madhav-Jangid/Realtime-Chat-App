@@ -7,6 +7,8 @@ import Login from './Routes/Login';
 import Register from './Routes/Register';
 import ChatPage from './Routes/ChatPage';
 import DevPage from './Routes/DevPage';
+import { Notifications } from 'react-push-notification';
+
 
 function App() {
   const { user } = useUser();
@@ -54,6 +56,7 @@ function App() {
 
   return (
     <div className="app">
+      <Notifications />
       <SignedOut>
         <Routes>
           <Route path='*' element={<Navigate to={'/home'} />} />
