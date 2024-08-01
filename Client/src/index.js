@@ -10,7 +10,7 @@ import store from './app/store'; // Assuming you have configured your Redux stor
 
 const PUBLISHABLE_KEY = process.env.REACT_APP_CLERK_AUTHENTICATION_KEY;
 
-const text = "Do not type or paste anything here!";
+const text = "Do not type or paste anything here!, this can be harmful";
 
 // Define the CSS styles
 const styles = `
