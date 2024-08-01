@@ -53,13 +53,18 @@ export default function ChatPage({ currentUser }) {
     const [urlUser, setUrlUser] = useState(null);
     const [highlight, setHighlight] = useState(false);
 
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
     const handleUsernameChange = async (urlUser) => {
         const urlUserData = users?.filter(user =>
             user.username.toLowerCase().includes(urlUser?.toLowerCase())
         );
         if (urlUserData && urlUserData.length > 0) {
-            // console.log(urlUserData?.[0]);
+            console.log(urlUserData);
             setUrlUser(urlUserData);
+            document.title = `Chats | ${capitalizeFirstLetter(urlUser)}`;
             dispatch(setSelectedUser(urlUserData[0]));
             setHighlight(true);
         } else {
@@ -73,6 +78,7 @@ export default function ChatPage({ currentUser }) {
         if (location.pathname.includes('/chats/')) {
             handleUsernameChange(urlUserFromPath);
         } else {
+            document.title = capitalizeFirstLetter(location.pathname.split('/').pop())
             console.log('no user found');
         }
     }, [location, users]); // Include `location` and `users` in the dependency array

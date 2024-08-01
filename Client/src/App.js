@@ -49,6 +49,11 @@ function App() {
 
 
   useEffect(() => {
+    document.title = process.env.REACT_APP_APP_NAME
+  }, [])
+
+
+  useEffect(() => {
     if (user) {
       RegisterUser();
     }

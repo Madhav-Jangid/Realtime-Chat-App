@@ -1,22 +1,29 @@
-import { SignedIn, UserButton, useUser } from '@clerk/clerk-react';
-import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+// import { UserButton, useUser } from '@clerk/clerk-react';
+import React, { useEffect }  from 'react'
+import { Link } from 'react-router-dom';
+import "../css/Homepage.css"
+import NavBar from '../Components/NavBar';
 
 export default function HomePage() {
 
-    const { user } = useUser();
+   
 
 
 
     return (
         <section className='page'>
-            Start here
-            <SignedIn>
-                <h2>Welcome {user?.username}</h2>
-                <UserButton></UserButton>
-            </SignedIn>
-            <Link to={'/login'}>Login</Link>
-            <Link to={'/signup'}>Register</Link>
+            <NavBar/>
+            <div className='middleContent'>
+                <p>The power of communication 🚀</p>
+                <h1>Discover a new way <br /> to stay in touch</h1>
+                <p className='shortMessageForHomePage'>
+                    A unified hub for all your messages, ensuring you never <br /> miss a beat when it comes to your communication.
+                </p>
+            </div>
+            <div className='lastButtonHomePage'>
+                <Link to={'/workflow'}>Learn More</Link>
+                <Link to={'/signup'}>Get Started</Link>
+            </div>
         </section>
     )
 }

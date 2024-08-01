@@ -31,7 +31,7 @@ function setupSocket(httpServer) {
                 io.emit('get_message', JSON.parse(message));
                 console.log('message sent: '+ message.message );
             }
-        })
+        });
 
         socket.on('disconnect', (reason) => {
             console.log(`Client disconnected: ${socket.id}, reason: ${reason}`);

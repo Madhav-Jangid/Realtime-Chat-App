@@ -41,7 +41,7 @@ export default function SideBar({ active, drawer }) {
 
     return (
         <div className={`SideNavBar ${!isNavOpened ? null : 'closedNav'}`} style={active ? { display: 'block', width: 280 } : { width: width }}>
-            <nav className="sideNavIcons">
+            <div className="sideNavIcons">
                 <ul className='topIcon'>
                     <li>
                         <WechatLogo size={40} />
@@ -106,7 +106,7 @@ export default function SideBar({ active, drawer }) {
                         </div>
                     </ul>
                 </>
-            </nav>
+            </div>
             {!drawer &&
                 <IconButton onClick={() => ShowLeftnav()} className='CaretRightButton'>
                     {isNavOpened ? <CaretRight className='CaretRight' /> : <CaretLeft className='CaretRight' />}

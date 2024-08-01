@@ -169,7 +169,7 @@ body.dark {
     text-decoration: none;
 }
 
-.closedNav>nav>ul>a {
+.closedNav>.sideNavIcons>ul>a {
     width: max-content;
     display: flex;
     align-items: center;
@@ -177,7 +177,7 @@ body.dark {
     position: relative;
 }
 
-.closedNav>nav>ul>a:hover::after {
+.closedNav>.sideNavIcons>ul>a:hover::after {
     content: attr(data-content);
     position: absolute;
     left: 130%;
@@ -188,7 +188,7 @@ body.dark {
     z-index: 10;
 }
 
-.closedNav>nav>ul>a:hover::before {
+.closedNav>.sideNavIcons>ul>a:hover::before {
     content: '';
     position: absolute;
     left: 120%;
@@ -200,11 +200,11 @@ body.dark {
     z-index: 10;
 }
 
-.closedNav>nav ul span {
+.closedNav>.sideNavIcons ul span {
     display: none;
 }
 
-.closedNav>nav .bottomIcons span:last-of-type{
+.closedNav>.sideNavIcons .bottomIcons span:last-of-type{
     display: block;
     height: 40px;
     width: 40px;
