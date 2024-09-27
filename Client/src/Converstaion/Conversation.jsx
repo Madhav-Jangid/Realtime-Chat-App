@@ -7,8 +7,9 @@ import { useSelector } from 'react-redux';
 import { selectSelectedUser } from '../features/selectedUser/selectedUserSlice';
 import { CircularProgress } from '@mui/material';
 import { useLocation } from 'react-router-dom';
+// import Gif from '../Utils/Images/848c342a56e7854dec45b9349c21dfe5.gif';
+import Gif from '../Utils/Images/newRobo.gif';
 const ConvoDiv = React.lazy(() => import('./ConvoDiv'));
-
 export default function Conversation() {
     
     const location = useLocation();
@@ -55,6 +56,8 @@ export default function Conversation() {
         checkUrlForChatUser();
     }, [location]);
 
+    
+
     return (
         <>
             {
@@ -85,6 +88,11 @@ export default function Conversation() {
 
                     <div className="CommonComponent">
                         <div className="welcome-container">
+                            <img height={400} style={{
+                                mixBlendMode: 'multiply',
+                                // opacity: '.7',
+                                backgroundBlendMode:'screen'
+                            }} src={Gif} alt="gif"/>
                             <h1 className="app-name">Welcome {user.fullName} to {process.env.REACT_APP_APP_NAME}</h1>
                             <p className="tagline">Where Conversations Come to Life!</p>
                             <div className="features">
