@@ -1,238 +1,105 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import TagFacesIcon from '@mui/icons-material/TagFaces';
-import { PaperPlaneTilt, Paperclip } from '@phosphor-icons/react';
+import { PaperPlaneTilt } from '@phosphor-icons/react';
 import EmojiPicker from 'emoji-picker-react';
 import { IconButton, TextField } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { useDispatch } from 'react-redux';
-import { setNewMessage } from '../features/newMessage/newMessageSlice';
-import { io } from 'socket.io-client';
+import { socket } from '../Utils/socket';
 
-export default function InputField({ selectedUser, roomId, user }) {
-    const socket = io(process.env.REACT_APP_BACKEND_URL);
-    const dispatch = useDispatch();
-    const [message, setMessage] = useState('');
-    const [showEmoji, setShowEmoji] = useState(false);
-    const [imageUrl, setImageUrl] = useState(null);
+export default function InputField({ roomId, currentUser, settings }) {
+  const [message, setMessage] = useState('');
+  const [showEmoji, setShowEmoji] = useState(false);
+  const typingRef = useRef(false);
+  const stopTimerRef = useRef(null);
 
-    const handelEmojiclickFunction = () => {
-        setShowEmoji((showEmoji) => !showEmoji);
+  useEffect(() => {
+    if (roomId) socket.emit('conversation:join', { conversationId: roomId });
+    typingRef.current = false;
+    if (stopTimerRef.current) {
+      clearTimeout(stopTimerRef.current);
+      stopTimerRef.current = null;
+    }
+  }, [roomId]);
+
+  const emitTypingStart = () => {
+    if (settings && settings.typingIndicators === false) return;
+    if (!roomId || typingRef.current) return;
+    typingRef.current = true;
+    socket.emit('typing:start', { conversationId: roomId });
+  };
+
+  const emitTypingStop = () => {
+    if (settings && settings.typingIndicators === false) return;
+    if (!roomId || !typingRef.current) return;
+    typingRef.current = false;
+    socket.emit('typing:stop', { conversationId: roomId });
+  };
+
+  const scheduleTypingStop = () => {
+    if (stopTimerRef.current) clearTimeout(stopTimerRef.current);
+    stopTimerRef.current = setTimeout(() => {
+      emitTypingStop();
+    }, 900);
+  };
+
+  const send = () => {
+    const text = message.trim();
+    if (!roomId || !text) return;
+
+    const optimisticMessage = {
+      _id: `tmp_${Date.now()}`,
+      conversationId: roomId,
+      sender: currentUser?._id,
+      text,
+      createdAt: new Date().toISOString(),
+      optimistic: true
     };
 
-    const handleEmojiClick = (emojiData) => {
-        const emojiValue = emojiData.emoji;
-        setMessage((prevMessage) => prevMessage + emojiValue);
-    };
+    window.dispatchEvent(new CustomEvent('chat:optimistic-message', { detail: optimisticMessage }));
+    socket.emit('message:send', { conversationId: roomId, text });
+    setMessage('');
+    emitTypingStop();
+  };
 
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImageUrl(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+  return (
+    <div className='convoInputs'>
+      <div className="convoInputIntractions">
+        {showEmoji && (
+          <EmojiPicker
+            style={{ position: 'absolute', height: '330px', bottom: 70, left: 5, overflow: 'auto', borderRadius: '20px', borderBottomLeftRadius: '0', backgroundColor: 'var(--primary-blue4)' }}
+            onEmojiClick={(emojiData) => {
+              setMessage((prev) => prev + emojiData.emoji);
+              emitTypingStart();
+              scheduleTypingStop();
+            }}
+          />
+        )}
 
-    const initializeChatData = (conversationId) => {
-        const initialData = {
-            conversationId: conversationId,
-            conversation: [],
-        };
-        localStorage.setItem(`chatData_${conversationId}`, JSON.stringify(initialData));
-    };
+        <IconButton onClick={() => setShowEmoji((v) => !v)}><TagFacesIcon /></IconButton>
 
-    const getChatData = (conversationId) => {
-        const chatData = localStorage.getItem(`chatData_${conversationId}`);
-        return chatData ? JSON.parse(chatData) : null;
-    };
-
-    const dispatchNewMessage = (message) => {
-        dispatch(
-            setNewMessage({
-                ...message,
-                date: message.date.toISOString(), // Convert Date object to ISO string
-            })
-        );
-    };
-
-    const addMessageToChat = (conversationId, user, message) => {
-        let from = user?.primaryEmailAddress.emailAddress;
-        const chatData = getChatData(conversationId);
-        if (chatData) {
-            const newMessage = {
-                from: from,
-                message: message.replace(/\n/g, '<br />'),
-                date: new Date(),
-            };
-            dispatchNewMessage(newMessage);
-            chatData.conversation.push(newMessage);
-            localStorage.setItem(`chatData_${conversationId}`, JSON.stringify(chatData));
-        }
-    };
-
-    const SendMessageToUser = async () => {
-        if (message.trim().length > 0) {
-            const messageToSend = imageUrl ? `${message}#$IMG$#${imageUrl}` : message;
-
-            initializeChatData(roomId);
-            addMessageToChat(roomId, user, messageToSend);
-
-            socket.emit('sent_message', {
-                from: {
-                    roomId,
-                    email: user?.primaryEmailAddress.emailAddress,
-                },
-                to: selectedUser,
-                message: messageToSend,
-            });
-
-            setMessage('');
-            setImageUrl(null);
-        }
-
-        try {
-            const chatData = getChatData(roomId);
-
-            if (!chatData || !chatData.conversation || chatData.conversation.length === 0) {
-                console.log('No messages to send.');
-                return;
-            }
-
-            const sendPromises = [];
-
-            for (let i = 0; i < chatData.conversation.length; i++) {
-                const storedMessage = chatData.conversation[i];
-
-                const sendPromise = fetch(`${process.env.REACT_APP_BACKEND_URL}/conversation/message`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        chatId: roomId,
-                        currentUser: storedMessage.from,
-                        message: storedMessage.message,
-                    }),
-                })
-                    .then(async (response) => {
-                        if (response.ok) {
-                            chatData.conversation.splice(i, 1);
-                            localStorage.setItem(`chatData_${roomId}`, JSON.stringify(chatData));
-                        } else {
-                            console.error(`Failed to send message "${storedMessage.message}".`);
-                        }
-                    })
-                    .catch((error) => {
-                        console.error(`Error sending message "${storedMessage.message}":`, error);
-                    });
-
-                sendPromises.push(sendPromise);
-            }
-
-            await Promise.all(sendPromises);
-
-            if (chatData.conversation.length === 0) {
-                localStorage.removeItem(`chatData_${roomId}`);
-                console.log('Conversation cleared from local storage.');
-            }
-        } catch (error) {
-            console.error('Error sending messages:', error);
-        }
-    };
-
-    useEffect(() => {
-        try {
-            if (selectedUser && roomId && user) {
-                // Initialize chat data if necessary
-                initializeChatData(roomId);
+        <TextField
+          className="convoInputForMessage"
+          multiline
+          maxRows={4}
+          placeholder="Type a message"
+          name="message"
+          value={message}
+          onChange={(e) => {
+            setMessage(e.target.value);
+            if (e.target.value.trim()) {
+              emitTypingStart();
+              scheduleTypingStop();
             } else {
-                console.log('Unavailable Props or currentUser already set');
+              emitTypingStop();
             }
-        } catch (error) {
-            console.error(error);
-        }
-    }, [user, roomId, selectedUser]);
+          }}
+          onBlur={emitTypingStop}
+          onKeyUp={(event) => {
+            if (settings?.enterToSend !== false && event.key === 'Enter' && !event.shiftKey) send();
+          }}
+        />
+      </div>
 
-    return (
-        <>
-            <div className={imageUrl ? 'convoInputs withImage' : 'convoInputs'}>
-                {imageUrl ? (
-                    <div className="tempImageDisplayer">
-                        <IconButton onClick={() => setImageUrl(null)}>
-                            <CloseIcon />
-                        </IconButton>
-                        <img src={imageUrl} alt="selectedImage" />
-                    </div>
-                ) : null}
-
-                <div className="convoInputIntractions">
-                    {showEmoji && (
-                        <EmojiPicker
-                            style={{
-                                position: 'absolute',
-                                height: '330px',
-                                bottom: 70,
-                                left: 5,
-                                resize: 'horizontal',
-                                overflow: 'auto',
-                                borderRadius: '20px',
-                                borderBottomLeftRadius: '0',
-                                backgroundColor: 'var(--primary-blue4)',
-                            }}
-                            onEmojiClick={handleEmojiClick}
-                        />
-                    )}
-
-                    <IconButton onClick={handelEmojiclickFunction}>
-                        <TagFacesIcon />
-                    </IconButton>
-
-                    <input
-                        style={{ display: 'none' }}
-                        id="fileInput"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                    />
-
-                    <TextField
-                        className="convoInputForMessage"
-                        multiline
-                        maxRows={4}
-                        type="text"
-                        placeholder={`Type a message`}
-                        name="message"
-                        value={message}
-                        onChange={(e) => {
-                            setMessage(e.target.value);
-                        }}
-                        onKeyUp={(event) => {
-                            if (event.key === 'Enter' && !event.shiftKey) {
-                                // event.preventDefault();
-                                SendMessageToUser();
-                            }
-                            if (event.key === 'Enter' && event.shiftKey) {
-                                event.preventDefault();
-                                // SendMessageToUser();
-                            }
-                        }}
-                    />
-
-                    <IconButton>
-                        <label htmlFor="fileInput">
-                            <Paperclip />
-                        </label>
-                    </IconButton>
-                </div>
-
-                <IconButton onClick={SendMessageToUser}>
-                    <PaperPlaneTilt style={{ color: 'var(--primary-text-light)' }} size={28} />
-                </IconButton>
-            </div>
-
-
-        </>
-    );
+      <IconButton onClick={send}><PaperPlaneTilt style={{ color: 'var(--primary-text-light)' }} size={28} /></IconButton>
+    </div>
+  );
 }

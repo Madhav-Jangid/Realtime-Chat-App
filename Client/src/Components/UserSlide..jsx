@@ -1,148 +1,75 @@
 import React, { useEffect, useState } from 'react';
-import { IconButton, tableSortLabelClasses } from '@mui/material';
+import { IconButton } from '@mui/material';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useUser } from '@clerk/clerk-react';
-import parse from 'html-react-parser';
 import DoneIcon from '@mui/icons-material/Done';
+import { api } from '../Utils/api';
 
-
-
-export default function UserSlide({ user, add, serverUser, highlight }) {
-
-    const { user: currentUser } = useUser();
-
-    const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    const handleUserClick = () => {
-        navigate(`/chats/${user.username}`)
-    };
-
-    const [requestStatus, setRequestStatus] = useState(false);
-    const [lastMessage, setLastMessage] = useState('');
-    const [roomId, setRoomId] = useState('');
-
-
-    function concatenateAndSortByCharacter(email1, email2) {
-        let concatenatedEmails = email1 + email2;
-        let charArray = concatenatedEmails.split('');
-        charArray.sort();
-        let sortedEmails = charArray.join('');
-        return sortedEmails;
-    }
-
-
-    useEffect(() => {
-        if (user?.email_addresses?.[0].email_address && currentUser?.primaryEmailAddress.emailAddress) {
-            let selectedUserEmail = user?.email_addresses[0].email_address;
-            let userEmail = currentUser?.primaryEmailAddress.emailAddress;
-            let conversationId = concatenateAndSortByCharacter(selectedUserEmail, userEmail)
-            setRoomId(conversationId);
-        }
-    }, [currentUser, user]);
-
-
-    const fetchConversation = async (roomId) => {
-        try {
-            const response = await fetch(`${BACKEND_URL}/conversation`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ conversationId: roomId }),
-            });
-            if (!response.ok) {
-                console.log('Error:', response.status, response.statusText);
-                return;
-            } else {
-                const conversationData = await response.json();
-                if (conversationData && conversationData.conversation.length > 0) {
-                    const lastMessage = conversationData.conversation[conversationData.conversation.length - 1];
-                    setLastMessage(lastMessage.message);
-                }
-            }
-        } catch (error) {
-            console.error('Error fetching session:', error);
-        }
-    };
-
-
-    const sendFriendRequest = async () => {
-        try {
-            const response = await fetch(`${BACKEND_URL}/addFriend`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    username: serverUser?.name,
-                    sendername: user?.username,
-                    user: serverUser?.email,
-                    isAccepted: false,
-                    to: user?.email_addresses[0]?.email_address,
-                }),
-            });
-            if (!response.ok) {
-                const data = await response.json();
-                if (data.already) {
-                    alert(data.message);
-                } else {
-                    console.log(data);
-                }
-                return;
-            } else {
-                const requestStatus = await response.json();
-                if (requestStatus.status) {
-                    setRequestStatus(true);
-                    alert(requestStatus.message);
-                } else {
-                    console.log(requestStatus.message);
-                }
-            }
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
-
-
-    useEffect(() => {
-        fetchConversation(roomId);
-    }, [roomId])
-
-    return (
-        <div style={highlight && user.username === location.pathname.split('/').pop() ? {
-            backgroundColor: 'var(--primary-blue1)'
-        } : null}
-            id={user.email_addresses[0].email_address} className='userSlide' onClick={(e) => {
-                if (serverUser?.friendList?.includes(user?.email_addresses[0].email_address)) {
-                    handleUserClick();
-                }
-            }}>
-            <img height={35} width={35} className='avatarImage' src={user.image_url} alt={`${user.username}'s_Image`} />
-
-            <div className='userDetails'>
-                <h3>{user.username}</h3>
-                {lastMessage && <h5>{lastMessage.replace(/<br \/>/g,"..")}</h5>}
-            </div>
-            {
-                add && !serverUser?.friendList?.includes(user?.email_addresses[0].email_address) ?
-                    <IconButton onClick={() => {
-                        if (user?.email_addresses[0].email_address) {
-                            sendFriendRequest();
-                        } else {
-                            console.log('id Hani');
-                        }
-                    }}>
-                        {!requestStatus ?
-                            <PersonAddIcon></PersonAddIcon> :
-                            <DoneIcon />
-                        }
-                    </IconButton> : null
-            }
-        </div>
-    )
+function formatLastTime(dateInput) {
+  if (!dateInput) return '';
+  const d = new Date(dateInput);
+  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
+
+export default function UserSlide({ user, add, conversationId, highlight, lastMessage, lastMessageAt, unreadCount }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [requestStatus, setRequestStatus] = useState(false);
+
+  const isFriend = user?.isFriend || !add;
+
+  const handleUserClick = () => {
+    if (isFriend && conversationId) navigate(`/chats/${conversationId}`);
+  };
+
+  useEffect(() => {
+    setRequestStatus(false);
+  }, [user?._id]);
+
+  const sendFriendRequest = async () => {
+    try {
+      await api.sendFriendRequest(user._id);
+      setRequestStatus(true);
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const activeConversationId = location.pathname.split('/chats/')[1]?.split('/')[0];
+
+  return (
+    <div
+      style={highlight && conversationId && conversationId === activeConversationId ? { backgroundColor: 'var(--primary-blue1)' } : null}
+      id={user._id}
+      className='userSlide'
+      onClick={handleUserClick}
+    >
+      <img height={35} width={35} className='avatarImage' src={user.avatar || user.image_url} alt={`${user.username}'s_Image`} />
+      <div className='userDetails'>
+        <h3>{user.username || user.name}</h3>
+        {!add ? <h5 style={{ opacity: 0.75 }}>{lastMessage || 'No messages yet'}</h5> : null}
+      </div>
+
+      {!add ? (
+        <div style={{ marginLeft: 'auto', flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
+          <small className='chatTimeStamp'>{formatLastTime(lastMessageAt)}</small>
+          {unreadCount > 0 ? (
+            <span style={{ background: '#25d366', color: '#fff', borderRadius: 10, minWidth: 20, height: 20, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, padding: '0 6px' }}>
+              {unreadCount}
+            </span>
+          ) : null}
+        </div>
+      ) : null}
+
+      {add && !isFriend ? (
+        <IconButton onClick={(e) => {
+          e.stopPropagation();
+          sendFriendRequest();
+        }}>
+          {!requestStatus ? <PersonAddIcon /> : <DoneIcon />}
+        </IconButton>
+      ) : null}
+    </div>
+  );
+}
+

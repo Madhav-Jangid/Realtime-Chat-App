@@ -1,23 +1,20 @@
 {
   "files": {
-    "main.css": "/static/css/main.8d07e16f.css",
-    "main.js": "/static/js/main.21c9dce2.js",
-    "static/js/537.75354ea4.chunk.js": "/static/js/537.75354ea4.chunk.js",
-    "static/js/228.572af44e.chunk.js": "/static/js/228.572af44e.chunk.js",
+    "main.css": "/static/css/main.320cbe0c.css",
+    "main.js": "/static/js/main.fde84159.js",
+    "static/js/537.168bd2be.chunk.js": "/static/js/537.168bd2be.chunk.js",
+    "static/js/228.cda9f435.chunk.js": "/static/js/228.cda9f435.chunk.js",
     "static/js/453.258b012d.chunk.js": "/static/js/453.258b012d.chunk.js",
-    "static/js/229.df397773.chunk.js": "/static/js/229.df397773.chunk.js",
-    "static/media/newRobo.gif": "/static/media/newRobo.53a74c3a97b0df88c207.gif",
     "static/media/ChillChat_Logo.png": "/static/media/ChillChat_Logo.8507e2942bbe15700b97.png",
     "index.html": "/index.html",
-    "main.8d07e16f.css.map": "/static/css/main.8d07e16f.css.map",
-    "main.21c9dce2.js.map": "/static/js/main.21c9dce2.js.map",
-    "537.75354ea4.chunk.js.map": "/static/js/537.75354ea4.chunk.js.map",
-    "228.572af44e.chunk.js.map": "/static/js/228.572af44e.chunk.js.map",
-    "453.258b012d.chunk.js.map": "/static/js/453.258b012d.chunk.js.map",
-    "229.df397773.chunk.js.map": "/static/js/229.df397773.chunk.js.map"
+    "main.320cbe0c.css.map": "/static/css/main.320cbe0c.css.map",
+    "main.fde84159.js.map": "/static/js/main.fde84159.js.map",
+    "537.168bd2be.chunk.js.map": "/static/js/537.168bd2be.chunk.js.map",
+    "228.cda9f435.chunk.js.map": "/static/js/228.cda9f435.chunk.js.map",
+    "453.258b012d.chunk.js.map": "/static/js/453.258b012d.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.8d07e16f.css",
-    "static/js/main.21c9dce2.js"
+    "static/css/main.320cbe0c.css",
+    "static/js/main.fde84159.js"
   ]
 }

@@ -1,113 +1,95 @@
-import React, { Suspense, useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useMemo, useState } from 'react';
 import './Conversation.css';
 import InputFeild from './InputFeild';
 import TopNavConvo from './TopNavConvo';
-import { useUser } from '@clerk/clerk-react';
 import { useSelector } from 'react-redux';
 import { selectSelectedUser } from '../features/selectedUser/selectedUserSlice';
 import { CircularProgress } from '@mui/material';
-import { useLocation } from 'react-router-dom';
-// import Gif from '../Utils/Images/848c342a56e7854dec45b9349c21dfe5.gif';
-import Gif from '../Utils/Images/newRobo.gif';
+import { Link, useLocation } from 'react-router-dom';
+import { socket } from '../Utils/socket';
 const ConvoDiv = React.lazy(() => import('./ConvoDiv'));
-export default function Conversation() {
-    
-    const location = useLocation();
-    
-    const [isContainUser, setIsContainUser] = useState(false);
-    
-    const { user } = useUser();
-    const [roomId, setRoomId] = useState('');
-    const selectedUser = useSelector(selectSelectedUser);
 
-    function concatenateAndSortByCharacter(email1, email2) {
-        let concatenatedEmails = email1 + email2;
-        let charArray = concatenatedEmails.split('');
-        charArray.sort();
-        let sortedEmails = charArray.join('');
-        return sortedEmails;
+export default function Conversation({ currentUser, settings }) {
+  const location = useLocation();
+  const selectedUser = useSelector(selectSelectedUser);
+  const [roomId, setRoomId] = useState('');
+  const [isContainUser, setIsContainUser] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchNavToken, setSearchNavToken] = useState(null);
+  const [searchMeta, setSearchMeta] = useState({ totalCount: 0, activeIndex: -1 });
+
+  useEffect(() => {
+    const pathname = location.pathname;
+    if (pathname.startsWith('/chats/') && pathname.split('/chats/')[1]) {
+      setIsContainUser(true);
+      setRoomId(pathname.split('/chats/')[1].split('/')[0]);
+    } else {
+      setIsContainUser(false);
+      setRoomId('');
+      setIsTyping(false);
     }
+    setSearchQuery('');
+    setSearchMeta({ totalCount: 0, activeIndex: -1 });
+  }, [location]);
 
-    useEffect(() => {
-        if (selectedUser?.email_addresses?.[0].email_address && user?.primaryEmailAddress.emailAddress) {
-            setIsContainUser(true);
-            let selectedUserEmail = selectedUser?.email_addresses[0].email_address;
-            let userEmail = user?.primaryEmailAddress.emailAddress;
-            let conversationId = concatenateAndSortByCharacter(selectedUserEmail, userEmail)
-            setRoomId(conversationId);
-        }
-    }, [selectedUser, user]);
+  useEffect(() => {
+    setIsTyping(false);
+    if (!roomId || !selectedUser?._id) return;
 
-
-
-    const checkUrlForChatUser = () => {
-        const pathname = location.pathname;
-        if (pathname.startsWith('/chats')) {
-            const chatUser = pathname.split('/chats')[1];
-            if (chatUser && chatUser.trim().length > 0 && chatUser !== '/') {
-                console.log('Chat user found:', chatUser);
-                return
-            }
-        }
-        setIsContainUser(false)
+    const onTyping = ({ conversationId, userId, isTyping: typing }) => {
+      if (conversationId !== roomId) return;
+      if (userId !== selectedUser._id) return;
+      setIsTyping(Boolean(typing));
     };
 
-    useEffect(() => {
-        checkUrlForChatUser();
-    }, [location]);
+    socket.on('typing:update', onTyping);
+    return () => socket.off('typing:update', onTyping);
+  }, [roomId, selectedUser?._id]);
 
-    
+  const displayName = useMemo(() => currentUser?.name || 'User', [currentUser]);
 
-    return (
-        <>
-            {
-                selectedUser?.username && isContainUser ?
-                    <div 
-                    style={window.innerWidth < 601 ? {
-                        zIndex: '50',
-                    } : {
-                        zIndex: '1',
-                    }}
-                     className='convoComponent'>
-                        <TopNavConvo selectedUser={selectedUser} />
-                        <Suspense fallback={
-                            <div style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                flexDirection: 'column',
-                                gap: 10
-                            }} id="conversation" name="conversation" className="conversation">
-                                <CircularProgress />
-                                <p>Loading...</p>
-                            </div>}>
-                            <ConvoDiv selectedUser={selectedUser} roomId={roomId} user={user} />
-                        </Suspense>
-                        <InputFeild selectedUser={selectedUser} roomId={roomId} user={user} />
-                    </div > :
-
-                    <div className="CommonComponent">
-                        <div className="welcome-container">
-                            <img height={400} style={{
-                                mixBlendMode: 'multiply',
-                                // opacity: '.7',
-                                backgroundBlendMode:'screen'
-                            }} src={Gif} alt="gif"/>
-                            <h1 className="app-name">Welcome {user.fullName} to {process.env.REACT_APP_APP_NAME}</h1>
-                            <p className="tagline">Where Conversations Come to Life!</p>
-                            <div className="features">
-                                <p>Explore the features:</p>
-                                <ul>
-                                    <li>📱 Instant Messaging</li>
-                                    <li>📸 Photo and Media Sharing</li>
-                                    <li>🎉 Group Chats</li>
-                                    <li>🔒 Enhanced Security</li>
-                                </ul>
-                            </div>
-                            <p className="call-to-action">Ready to embark on a journey of endless conversations? Sign up now and let the chatting begin!</p>
-                        </div>
-                    </div>
-            }
-        </>
-    )
+  return selectedUser?.username && isContainUser ? (
+    <div className='convoComponent'>
+      <TopNavConvo
+        selectedUser={selectedUser}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchMeta={searchMeta}
+        onSearchPrev={() => setSearchNavToken({ direction: 'prev', at: Date.now() })}
+        onSearchNext={() => setSearchNavToken({ direction: 'next', at: Date.now() })}
+      />
+      <Suspense fallback={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 10 }} id="conversation" className="conversation"><CircularProgress /><p>Loading...</p></div>}>
+        <ConvoDiv
+          key={roomId}
+          selectedUser={selectedUser}
+          roomId={roomId}
+          currentUser={currentUser}
+          isTyping={isTyping}
+          settings={settings}
+          searchQuery={searchQuery}
+          searchNavToken={searchNavToken}
+          onSearchMetaChange={setSearchMeta}
+        />
+      </Suspense>
+      <InputFeild roomId={roomId} currentUser={currentUser} settings={settings} />
+    </div>
+  ) : (
+    <div className="CommonComponent">
+      <div className="welcome-container defaultChatView">
+        <img className="defaultChatImage" height={280} style={{ objectFit: 'contain' }} src="/Chating.png" alt="Couples chatting" />
+        <h1 className="app-name">Hi, {displayName}</h1>
+        <p className="defaultChatSubtext">Pick a chat and start talking.</p>
+        <div className="defaultChatActions">
+          <Link to="/chats" className="defaultChatBtn primary">Open Chats</Link>
+          <Link to="/friend-requests" className="defaultChatBtn">Friend Requests</Link>
+          <Link to="/settings" className="defaultChatBtn">Settings</Link>
+        </div>
+        <ul className="defaultChatTips">
+          <li>Simple. Fast. Private.</li>
+        </ul>
+      </div>
+    </div>
+  );
 }

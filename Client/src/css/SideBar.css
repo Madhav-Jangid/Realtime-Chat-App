@@ -8,17 +8,18 @@
 }
 
 :root {
-    --white: #fff;
-    --black: #000;
-    --primary-text-bark: #3e8fff;
-    --primary-text-light: #1c2a4b;
+    --white: #ffffff;
+    --black: #0f172a;
+    --primary-text-bark: #2d6cdf;
+    --primary-text-light: #1f2f50;
+    --primary-text-dark: #0f172a;
     --primary-blue6: #539bff;
-    --primary-blue4: #539bff;
-    --primary-blue3: #b6ccfe;
-    --primary-blue2: #d7e3fc;
-    --primary-blue1: #edf2fb;
-    --custom: #000000;
-    --custom2: #3d10f0;
+    --primary-blue4: #5a87ff;
+    --primary-blue3: #d2deff;
+    --primary-blue2: #e8efff;
+    --primary-blue1: #f6f8ff;
+    --custom: #0f172a;
+    --custom2: #2755ff;
     --trans-02: all 0.2s ease;
     --trans-03: all 0.3s ease;
     --trans-04: all 0.4s ease;
@@ -27,29 +28,30 @@
 
 body {
     overflow-y: hidden;
-    background-color: var(--white);
+    background: var(--white);
     transition: var(--trans-02);
     color: var(--black);
 }
 
 body.dark {
-    --white: #000;
-    --black: #fff;
-    --primary-text-dark: #ffffff;
-    --primary-text-light: #3e8fff;
-    --primary-blue4: #1c2a4b;
-    --primary-blue3: #425a86;
-    --primary-blue2: #2e405f;
-    --primary-blue1: #192030;
-    --custom: #ffffff;
-    --custom2: #0ef;
+    --white: #0a0f1f;
+    --black: #e6edff;
+    --primary-text-dark: #e6edff;
+    --primary-text-light: #8eb5ff;
+    --primary-blue4: #1b2850;
+    --primary-blue3: #2f4274;
+    --primary-blue2: #1a2546;
+    --primary-blue1: #0e1630;
+    --custom: #e6edff;
+    --custom2: #7cd3ff;
 }
 
 .SideNavBar {
     height: 100%;
     min-width: 70px;
     border-radius: inherit;
-    background-color: var(--primary-blue4);
+    background: linear-gradient(180deg, #6a97ff 0%, #4f74dd 100%);
+    box-shadow: 0 16px 32px rgba(44, 74, 153, 0.25);
     position: relative;
     z-index: 10;
     transition: .2s width ease-in;
@@ -150,7 +152,13 @@ body.dark {
 
 
 .activeNavLink {
-    background-color: var(--white);
+    background-color: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 8px 18px rgba(23, 49, 112, 0.2);
+}
+
+body.dark .SideNavBar {
+    background: linear-gradient(180deg, #1f2f5f 0%, #17213f 100%);
+    box-shadow: 0 16px 28px rgba(4, 8, 18, 0.45);
 }
 
 .activeNavLink span,

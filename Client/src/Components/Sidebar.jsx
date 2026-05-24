@@ -13,8 +13,23 @@ export default function SideBar({ active, drawer }) {
 
     const [width, setWidth] = useState(80);
     const [isNavOpened, setIsNavOpened] = useState(true);
+    const [isTablet, setIsTablet] = useState(() => window.innerWidth > 600 && window.innerWidth <= 900);
+
+    useEffect(() => {
+        const onResize = () => {
+            const tablet = window.innerWidth > 600 && window.innerWidth <= 900;
+            setIsTablet(tablet);
+            if (tablet) {
+                setWidth(70);
+                setIsNavOpened(true);
+            }
+        };
+        window.addEventListener('resize', onResize);
+        return () => window.removeEventListener('resize', onResize);
+    }, []);
 
     const ShowLeftnav = () => {
+        if (isTablet) return;
         if (isNavOpened) {
             setWidth(280);
         } else {
@@ -39,8 +54,11 @@ export default function SideBar({ active, drawer }) {
         setTheme(!theme);
     };
 
+    const effectiveWidth = isTablet ? 70 : width;
+    const effectiveClosed = isTablet ? true : isNavOpened;
+
     return (
-        <div className={`SideNavBar ${!isNavOpened ? null : 'closedNav'}`} style={active ? { display: 'block', width: 280 } : { width: width }}>
+        <div className={`SideNavBar ${effectiveClosed ? 'closedNav' : ''}`} style={active ? { display: 'block', width: 280 } : { width: effectiveWidth }}>
             <div className="sideNavIcons">
                 <ul className='topIcon'>
                     <li>
@@ -50,7 +68,7 @@ export default function SideBar({ active, drawer }) {
 
                     <Link data-content="Chats" className={location.pathname.endsWith('chats') || location.pathname.includes('chats') ? 'activeNavLink' : 'nonActiveNavLink'} to={'/chats'}>
                         <li className='newNavLink'>
-                            <IconButton>
+                            <IconButton aria-label='Chats'>
                                 <ChatTeardropDots className='phosphor-icon' />
                             </IconButton>
                             <span>Chats</span>
@@ -59,7 +77,7 @@ export default function SideBar({ active, drawer }) {
 
                     <Link data-content="Friend Requests" className={location.pathname.endsWith('friend-requests') ? 'activeNavLink' : 'nonActiveNavLink'} to={'/friend-requests'}>
                         <li className='newNavLink'>
-                            <IconButton>
+                            <IconButton aria-label='Friend requests'>
                                 <Users className='phosphor-icon' />
                             </IconButton>
                             <span>Friend Requests</span>
@@ -68,7 +86,7 @@ export default function SideBar({ active, drawer }) {
 
                     <Link data-content="Notifications" className={location.pathname.endsWith('notifications') ? 'activeNavLink' : 'nonActiveNavLink'} to={'/notifications'}>
                         <li className='newNavLink'>
-                            <IconButton>
+                            <IconButton aria-label='Notifications'>
                                 <Bell className='phosphor-icon' />
                             </IconButton>
                             <span>Notifications</span>
@@ -77,7 +95,7 @@ export default function SideBar({ active, drawer }) {
 
                     <Link data-content="Settings" className={location.pathname.endsWith('settings') ? 'activeNavLink' : 'nonActiveNavLink'} to={'/settings'}>
                         <li className='newNavLink'>
-                            <IconButton>
+                            <IconButton aria-label='Settings'>
                                 <Gear className='phosphor-icon' />
                             </IconButton>
                             <span>Settings</span>
@@ -91,24 +109,24 @@ export default function SideBar({ active, drawer }) {
                         <li onClick={() => {
                             setTheme(!theme);
                             toggleTheme();
-                        }} style={isNavOpened ? { display: 'flex', alignItems: 'center', justifyContent: 'center' } : { display: 'block' }}>
-                            <IconButton >
+                        }} style={effectiveClosed ? { display: 'flex', alignItems: 'center', justifyContent: 'center' } : { display: 'block' }}>
+                            <IconButton aria-label='Toggle theme'>
                                 {!theme ?
                                     <DarkModeIcon /> :
                                     <WbSunnyIcon />
                                 }
                             </IconButton>
-                            {!isNavOpened ? <span>{!theme ? 'Dark Theme' : 'Light Theme'}</span> : null}
+                            {!effectiveClosed ? <span>{!theme ? 'Dark Theme' : 'Light Theme'}</span> : null}
                         </li>
 
                         <div className='sideNavUserIcon'>
-                            {isNavOpened ? <UserButton /> : <UserButton showName />}
+                            {effectiveClosed ? <UserButton /> : <UserButton showName />}
                         </div>
                     </ul>
                 </>
             </div>
-            {!drawer &&
-                <IconButton onClick={() => ShowLeftnav()} className='CaretRightButton'>
+            {!drawer && !isTablet &&
+                <IconButton aria-label='Toggle sidebar' onClick={() => ShowLeftnav()} className='CaretRightButton'>
                     {isNavOpened ? <CaretRight className='CaretRight' /> : <CaretLeft className='CaretRight' />}
                 </IconButton>
             }

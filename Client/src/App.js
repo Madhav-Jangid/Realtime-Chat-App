@@ -1,70 +1,61 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import { SignedIn, SignedOut, useUser } from '@clerk/clerk-react';
+import { Route, Routes, Navigate } from 'react-router-dom';
+import { SignedIn, SignedOut, useAuth } from '@clerk/clerk-react';
 import HomePage from './Routes/HomePage';
 import Login from './Routes/Login';
 import Register from './Routes/Register';
 import ChatPage from './Routes/ChatPage';
 import DevPage from './Routes/DevPage';
 import { Notifications } from 'react-push-notification';
-
+import { api, setAuthToken } from './Utils/api';
+import { connectSocket, disconnectSocket } from './Utils/socket';
+import { applyThemeFromSettings, getSettings } from './Utils/settings';
 
 function App() {
-  const { user } = useUser();
-
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-
+  const { getToken } = useAuth();
   const [currentUser, setCurrentUser] = useState(null);
 
-  const RegisterUser = async () => {
-    try {
-      const response = await fetch(`${BACKEND_URL}/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: user.primaryEmailAddress.emailAddress,
-          name: user.username,
-          imgUrl: user.imageUrl
-        })
-      });
-
-
-      if (!response.ok) {
-        console.log('Something went wrong try to reload site');
-        return
-      }
-
-      const data = await response.json();
-      if (data) {
-        setCurrentUser(data);
-        return data;
-      }
-    } catch (err) {
-      console.error(err.message);
-    }
-  }
-
+  useEffect(() => {
+    document.title = process.env.REACT_APP_APP_NAME;
+    const settings = getSettings();
+    applyThemeFromSettings(settings);
+    document.body.classList.toggle('compact-mode', Boolean(settings.compactMode));
+  }, []);
 
   useEffect(() => {
-    document.title = process.env.REACT_APP_APP_NAME
-  }, [])
+    let mounted = true;
 
+    async function bootstrapAuth() {
+      try {
+        const clerkToken = await getToken();
+        if (!clerkToken) return;
 
-  useEffect(() => {
-    if (user) {
-      RegisterUser();
+        const data = await api.clerkLogin(clerkToken);
+        if (!mounted || !data?.token) return;
+
+        setAuthToken(data.token);
+        connectSocket(data.token);
+        setCurrentUser(data.user);
+      } catch (error) {
+        console.error('Auth bootstrap failed', error);
+      }
     }
-  }, [user])
+
+    bootstrapAuth();
+
+    return () => {
+      mounted = false;
+      disconnectSocket();
+    };
+  }, [getToken]);
 
   return (
     <div className="app">
       <Notifications />
       <SignedOut>
         <Routes>
-          <Route path='*' element={<Navigate to={'/home'} />} />
+          <Route path="*" element={<Navigate to={'/home'} />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Register />} />
@@ -72,13 +63,13 @@ function App() {
       </SignedOut>
       <SignedIn>
         <Routes>
-          <Route path='/' element={<Navigate to={'/chats'} />} />
+          <Route path="/" element={<Navigate to={'/chats'} />} />
           <Route path="/*" element={<ChatPage currentUser={currentUser} />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/dev" element={<DevPage />} />
         </Routes>
       </SignedIn>
-    </div >
+    </div>
   );
 }
 

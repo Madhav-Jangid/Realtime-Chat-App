@@ -1,0 +1,201 @@
+.settingsTab {
+  min-width: 280px;
+  width: auto;
+  max-width: 100%;
+  padding: 16px;
+  overflow-y: auto;
+  height: 100%;
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.settingsCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 12px;
+}
+
+.settingsCard h4 {
+  margin: 0 0 10px;
+  font-size: 15px;
+  color: #0f172a;
+}
+
+.settingsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+  color: #0f172a;
+}
+
+.settingsRow:last-child {
+  border-bottom: 0;
+}
+
+.toggleSwitch {
+  width: 48px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid #cbd5e1;
+  background: #e2e8f0;
+  padding: 2px;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.toggleThumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.3);
+  transform: translateX(0);
+  transition: transform 0.2s ease;
+}
+
+.toggleSwitch.on {
+  background: #22c55e;
+  border-color: #16a34a;
+}
+
+.toggleSwitch.on .toggleThumb {
+  transform: translateX(20px);
+}
+
+.toggleSwitch:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.settingsMessage {
+  color: #065f46;
+  font-size: 14px;
+  margin: 8px 0;
+}
+
+.settingsError {
+  color: #b91c1c;
+  font-size: 14px;
+  margin: 8px 0;
+}
+
+.settingsSavedAt {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.dangerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.dangerRow:last-child {
+  border-bottom: 0;
+}
+
+.dangerBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #ef4444;
+  background: #fee2e2;
+  color: #991b1b;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.dangerBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.deleteBtn {
+  border-color: #dc2626;
+  background: #fecaca;
+}
+
+.emptyState {
+  margin: 6px 0;
+  color: #475569;
+}
+
+.settingsActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.secondaryBtn {
+  border: 1px solid #94a3b8;
+  background: #f8fafc;
+  color: #0f172a;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+body.dark .settingsTab {
+  background: #0b1220;
+  color: #e2e8f0;
+}
+
+body.dark .settingsCard {
+  background: #111827;
+  border-color: #243041;
+}
+
+body.dark .settingsCard h4,
+body.dark .settingsRow,
+body.dark .dangerRow,
+body.dark .dangerRow strong,
+body.dark .emptyState {
+  color: #e2e8f0;
+}
+
+body.dark .settingsRow,
+body.dark .dangerRow {
+  border-bottom-color: #243041;
+}
+
+body.dark .toggleSwitch {
+  background: #334155;
+  border-color: #475569;
+}
+
+body.dark .toggleSwitch.on {
+  background: #16a34a;
+  border-color: #22c55e;
+}
+
+body.dark .toggleThumb {
+  background: #e2e8f0;
+}
+
+body.dark .dangerBtn {
+  background: #3f1d1d;
+  border-color: #f87171;
+  color: #fecaca;
+}
+
+body.dark .deleteBtn {
+  background: #4c1d1d;
+  border-color: #fb7185;
+  color: #fecdd3;
+}
+
+body.dark .secondaryBtn {
+  background: #1e293b;
+  color: #e2e8f0;
+  border-color: #475569;
+}
