@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CircularProgress } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { api } from '../Utils/api';
@@ -43,7 +43,7 @@ export default function ConvoDiv({ selectedUser, roomId, currentUser, isTyping, 
 
   const seenSentRef = useRef(new Set());
 
-  const recomputeUnreadMarker = (messages) => {
+  const recomputeUnreadMarker = useCallback((messages) => {
     const firstUnseen = (messages || []).find((msg) => {
       const senderId = typeof msg.sender === 'string' ? msg.sender : msg.sender?._id;
       const seenBy = (msg.seenBy || []).map(String);
@@ -51,7 +51,7 @@ export default function ConvoDiv({ selectedUser, roomId, currentUser, isTyping, 
     });
 
     setUnreadStartId(firstUnseen?._id ? String(firstUnseen._id) : '');
-  };
+  }, [currentUser?._id]);
 
   const scrollToMessageElement = (messageId) => {
     if (!messageId) return;
@@ -122,7 +122,7 @@ export default function ConvoDiv({ selectedUser, roomId, currentUser, isTyping, 
         setPagination({ nextCursor: null, hasMore: false, loadingMore: false });
       }
     });
-  }, [roomId, currentUser?._id]);
+  }, [roomId, currentUser?._id, recomputeUnreadMarker]);
 
   useEffect(() => {
     if (settings && settings.readReceipts === false) return;
@@ -143,7 +143,7 @@ export default function ConvoDiv({ selectedUser, roomId, currentUser, isTyping, 
     });
   }, [conversation, roomId, currentUser?._id, settings?.readReceipts]);
 
-  const loadOlderMessages = async () => {
+  const loadOlderMessages = useCallback(async () => {
     if (!roomId || !pagination.hasMore || !pagination.nextCursor || pagination.loadingMore) return;
     const container = divRef.current;
     if (!container) return;
@@ -176,7 +176,7 @@ export default function ConvoDiv({ selectedUser, roomId, currentUser, isTyping, 
       console.error(error);
       setPagination((p) => ({ ...p, loadingMore: false }));
     }
-  };
+  }, [pagination.hasMore, pagination.loadingMore, pagination.nextCursor, recomputeUnreadMarker, roomId]);
 
   useEffect(() => {
     const el = divRef.current;
@@ -186,7 +186,7 @@ export default function ConvoDiv({ selectedUser, roomId, currentUser, isTyping, 
     };
     el.addEventListener('scroll', onScroll);
     return () => el.removeEventListener('scroll', onScroll);
-  }, [roomId, pagination.hasMore, pagination.nextCursor, pagination.loadingMore]);
+  }, [roomId, pagination.hasMore, pagination.nextCursor, pagination.loadingMore, loadOlderMessages]);
 
   useEffect(() => {
     const onOptimistic = (event) => {
@@ -269,7 +269,7 @@ export default function ConvoDiv({ selectedUser, roomId, currentUser, isTyping, 
       socket.off('message:deleted', onDeleted);
       socket.off('message:seen:update', onSeenUpdate);
     };
-  }, [roomId, editingId]);
+  }, [roomId, editingId, recomputeUnreadMarker, settings]);
 
   const startEdit = (msg) => {
     setEditingId(String(msg._id));

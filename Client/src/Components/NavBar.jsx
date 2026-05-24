@@ -6,7 +6,6 @@ import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import DragHandleIcon from '@mui/icons-material/DragHandle';
 import { Button } from '@mui/material';
-import ChillChatLogo from '../Utils/Images/ChillChat_Logo.png';
 
 
 export default function NavBar() {

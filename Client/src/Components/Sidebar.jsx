@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import '../css/SideBar.css';
 import { IconButton } from '@mui/material';
 import { Bell, CaretLeft, CaretRight, ChatTeardropDots, Gear, Users, WechatLogo } from '@phosphor-icons/react';
@@ -28,7 +28,7 @@ export default function SideBar({ active, drawer }) {
         return () => window.removeEventListener('resize', onResize);
     }, []);
 
-    const ShowLeftnav = () => {
+    const ShowLeftnav = useCallback(() => {
         if (isTablet) return;
         if (isNavOpened) {
             setWidth(280);
@@ -36,13 +36,13 @@ export default function SideBar({ active, drawer }) {
             setWidth(80);
         }
         setIsNavOpened(!isNavOpened);
-    };
+    }, [isNavOpened, isTablet]);
 
     useEffect(() => {
         if (active) {
             ShowLeftnav()
         }
-    }, [active])
+    }, [active, ShowLeftnav])
 
     const [theme, setTheme] = useState(false);
     const toggleTheme = () => {
