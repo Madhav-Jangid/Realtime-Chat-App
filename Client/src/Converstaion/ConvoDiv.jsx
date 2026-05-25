@@ -11,6 +11,19 @@ function escapeRegex(input) {
 const PAGE_SIZE = 20;
 const URL_REGEX = /(https?:\/\/[^\s]+)/gi;
 
+function toTime(value) {
+  const t = new Date(value || 0).getTime();
+  return Number.isNaN(t) ? 0 : t;
+}
+
+function sortMessagesAsc(messages) {
+  return [...(messages || [])].sort((a, b) => {
+    const byTime = toTime(a?.createdAt) - toTime(b?.createdAt);
+    if (byTime !== 0) return byTime;
+    return String(a?._id || '').localeCompare(String(b?._id || ''));
+  });
+}
+
 function toDateKey(dateInput) {
   const d = new Date(dateInput);
   return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
@@ -88,7 +101,7 @@ export default function ConvoDiv({ selectedUser, roomId, currentUser, isTyping, 
       const data = await api.getMessages(roomId, undefined, PAGE_SIZE);
       if (seq !== loadSeqRef.current) return;
 
-      const items = [...(data?.items || [])].reverse();
+      const items = sortMessagesAsc(data?.items || []);
       setConversation(items);
       recomputeUnreadMarker(items);
       setPagination({ nextCursor: data?.pageInfo?.nextCursor || null, hasMore: Boolean(data?.pageInfo?.hasMore), loadingMore: false });
@@ -160,9 +173,9 @@ export default function ConvoDiv({ selectedUser, roomId, currentUser, isTyping, 
         return;
       }
 
-      const olderAsc = [...olderDesc].reverse();
+      const olderAsc = sortMessagesAsc(olderDesc);
       setConversation((prev) => {
-        const merged = [...olderAsc, ...(prev || [])];
+        const merged = sortMessagesAsc([...olderAsc, ...(prev || [])]);
         recomputeUnreadMarker(merged);
         return merged;
       });
@@ -192,7 +205,7 @@ export default function ConvoDiv({ selectedUser, roomId, currentUser, isTyping, 
     const onOptimistic = (event) => {
       const msg = event.detail;
       if (!msg || msg.conversationId !== roomId) return;
-      setConversation((prev) => [...(prev || []), msg]);
+      setConversation((prev) => sortMessagesAsc([...(prev || []), msg]));
     };
     window.addEventListener('chat:optimistic-message', onOptimistic);
     return () => window.removeEventListener('chat:optimistic-message', onOptimistic);
@@ -213,8 +226,9 @@ export default function ConvoDiv({ selectedUser, roomId, currentUser, isTyping, 
         } else {
           next = [...base, msg];
         }
-        recomputeUnreadMarker(next);
-        return next;
+        const sorted = sortMessagesAsc(next);
+        recomputeUnreadMarker(sorted);
+        return sorted;
       });
     };
 
