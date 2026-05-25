@@ -337,15 +337,6 @@ export default function ConvoDiv({ selectedUser, roomId, currentUser, isTyping, 
     if (nearBottom) container.scrollTop = container.scrollHeight;
   }, [conversation, isTyping, pagination.loadingMore]);
 
-  const extractTime = (dateString) => {
-    const date = new Date(dateString);
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const amOrPm = hours >= 12 ? 'PM' : 'AM';
-    const formattedHours = hours % 12 || 12;
-    return `${formattedHours}:${minutes < 10 ? '0' + minutes : minutes} ${amOrPm}`;
-  };
-
   const renderHighlightedText = (text) => {
     const q = searchQuery.trim();
     if (!q) return text;
@@ -440,7 +431,7 @@ export default function ConvoDiv({ selectedUser, roomId, currentUser, isTyping, 
                 ) : (
                   <h4 style={message.optimistic ? { opacity: 0.7 } : undefined}>{renderMessageWithLinks(message.text)}</h4>
                 )}
-                <span>{extractTime(message.createdAt || new Date().toISOString())}{message.editedAt ? ' • edited' : ''}</span>
+                {message.editedAt ? <span>edited</span> : null}
               </div>
             </div>
           </React.Fragment>
